@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KlinCom — AI systems & business automation</title>
+<meta name="description" content="Maxim Klin — solo AI systems developer. AI assistants, Telegram mini apps and bots, data automation. From idea to launch, end-to-end.">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -559,8 +561,24 @@ const T = {
   }
 };
 
+// Язык по умолчанию: сохранённый выбор → язык браузера (uk→ua, ru→ru) → EN.
+function initialLang(){
+  try{
+    const saved = localStorage.getItem('kc_lang');
+    if(saved && T[saved]) return saved;
+    const list = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'en']);
+    for(const raw of list){
+      const l = String(raw).toLowerCase();
+      if(l.startsWith('uk')) return 'ua';
+      if(l.startsWith('ru')) return 'ru';
+      if(l.startsWith('en')) return 'en';
+    }
+  }catch(e){}
+  return 'en';
+}
+
 class Component extends DCLogic {
-  state = { active: 0, open: false, now: '', lang: 'ru' };
+  state = { active: 0, open: false, now: '', lang: initialLang() };
 
   clamp(v,a,b){ return v<a?a:v>b?b:v; }
 
@@ -572,7 +590,12 @@ class Component extends DCLogic {
     const lang = this.state.lang || 'ru';
     const t = T[lang] || T.ru;
     const langs = [['UA','ua'],['RU','ru'],['EN','en']].map(([code,key])=>({
-      code, go: ()=>this.setState({ lang: key }),
+      code,
+      go: ()=>{
+        this.setState({ lang: key });
+        try{ localStorage.setItem('kc_lang', key); }catch(e){}
+        document.documentElement.lang = key==='ua' ? 'uk' : key;
+      },
       bg: lang===key ? accent : 'transparent',
       fg: lang===key ? '#0B0A09' : 'rgba(242,240,235,0.62)',
     }));
@@ -731,6 +754,7 @@ class Component extends DCLogic {
     this.draw();
     this.initLogo();
     this.initGalleries();
+    document.documentElement.lang = this.state.lang==='ua' ? 'uk' : this.state.lang;
   }
 
   // Мини-коллажи в слотах проектов: автосмена + клик = следующий кадр + точки.
