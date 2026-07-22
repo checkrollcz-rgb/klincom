@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KlinCom — kinetic wordmark</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=general-sans@400,500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;font-family:'General Sans',sans-serif;background:#141210;color:#F2F0EB;-webkit-font-smoothing:antialiased;}
+
+  /* ---- page chrome (превью-стенд, в компонент не входит) ---- */
+  .stage{min-height:100vh;display:flex;flex-direction:column;}
+  .bar{display:flex;align-items:center;gap:16px;padding:16px 24px;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;background:rgba(20,18,16,0.85);backdrop-filter:blur(10px);z-index:5;flex-wrap:wrap;}
+  .bar h1{font-family:'Clash Display';font-weight:600;font-size:15px;letter-spacing:-0.01em;margin:0;}
+  .bar .sp{flex:1;}
+  .seg{display:inline-flex;border:1px solid rgba(255,255,255,0.14);border-radius:10px;overflow:hidden;}
+  .seg button{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;padding:8px 14px;background:transparent;color:rgba(242,240,235,0.6);border:none;cursor:pointer;transition:background .2s,color .2s;}
+  .seg button[aria-pressed="true"]{background:#FF5A1F;color:#0B0A09;font-weight:700;}
+  .act{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;padding:8px 14px;background:transparent;color:rgba(242,240,235,0.6);border:1px solid rgba(255,255,255,0.14);border-radius:10px;cursor:pointer;}
+  .panels{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:0;}
+  @media(max-width:820px){.panels{grid-template-columns:1fr;}}
+  .panel{display:flex;align-items:center;justify-content:center;padding:64px 48px;min-height:340px;position:relative;}
+  .panel--dark{background:#0B0A09;}
+  .panel--light{background:#F2F0EB;}
+  .panel .cap{position:absolute;top:16px;left:20px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;opacity:0.4;}
+  .panel--light .cap{color:#0B0A09;}
+
+  /* ===================================================================
+     KINETIC WORDMARK COMPONENT  (.lk)  — это и есть дроп-ин компонент
+     =================================================================== */
+  .lk{--ink:#F2F0EB;display:inline-block;line-height:0;cursor:default;-webkit-tap-highlight-color:transparent;}
+  .lk[data-theme="light"]{--ink:#0B0A09;}
+  .lk svg{display:block;width:min(560px,80vw);height:auto;overflow:visible;}
+
+  .lk text{font-family:'Clash Display',sans-serif;font-weight:700;letter-spacing:-0.02em;}
+  body.font-archivo .lk text{font-family:'Archivo Black',sans-serif;font-weight:400;letter-spacing:-0.01em;}
+
+  /* solid слой A */
+  .lk .lk-solid{fill:var(--ink);}
+  .lk .lk-solid-tag{fill:var(--ink);}
+
+  /* echo слой B — контур со сдвигом + наклоном */
+  .lk .lk-echo,.lk .lk-echo-tag{
+    fill:none;stroke:var(--ink);vector-effect:non-scaling-stroke;
+    transform-box:fill-box;transform-origin:0% 100%;
+    transition:transform .28s cubic-bezier(.2,.8,.2,1),stroke .28s ease;
+  }
+  .lk .lk-echo{stroke-width:1.4;transform:translate(7px,6px) skewX(-7deg);}
+  .lk .lk-echo-tag{stroke-width:0.9;transform:translate(3px,3px) skewX(-6deg);}
+
+  /* акцентная опция: эхо в оранжевом (всегда включено) */
+  .lk.accent .lk-echo,.lk.accent .lk-echo-tag{stroke:#FF5A1F;}
+
+  /* hover — эхо разъезжается сильнее и заливается оранжевым */
+  .lk:hover .lk-echo,.lk.is-tap .lk-echo{transform:translate(11px,9px) skewX(-11deg);stroke:#FF5A1F;}
+  .lk:hover .lk-echo-tag,.lk.is-tap .lk-echo-tag{transform:translate(6px,5px) skewX(-9deg);stroke:#FF5A1F;}
+
+  .lk .lk-meta{font-family:'Space Mono',monospace;font-weight:400;font-size:13px;letter-spacing:0.16em;fill:var(--ink);opacity:0.42;}
+
+  @media (prefers-reduced-motion: reduce){
+    .lk .lk-echo,.lk .lk-echo-tag{transition:none;}
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="bar">
+    <h1>KINETIC WORDMARK · KlinCom</h1>
+    <div class="sp"></div>
+    <span style="font-family:'Space Mono';font-size:11px;letter-spacing:.06em;opacity:.5;text-transform:uppercase;">Шрифт</span>
+    <div class="seg" id="fontSeg">
+      <button data-font="clash" aria-pressed="true">Clash Display</button>
+      <button data-font="archivo" aria-pressed="false">Archivo Black</button>
+    </div>
+    <button class="act" id="accentBtn" aria-pressed="false">Эхо: оранж</button>
+    <button class="act" id="replayBtn">↻ Intro</button>
+  </div>
+
+  <div class="panels">
+    <div class="panel panel--dark">
+      <span class="cap">на тёмном · #0B0A09</span>
+      <!-- === DROP-IN: dark theme (белые буквы) === -->
+      <div class="lk" data-theme="dark" data-lockup>
+        <svg viewBox="0 0 680 250" role="img" aria-label="Maxim Klin — KlinCom">
+          <g class="lk-name">
+            <text class="lk-echo"   x="8" y="150" font-size="98">Maxim Klin</text>
+            <text class="lk-solid"  x="8" y="150" font-size="98">Maxim Klin</text>
+          </g>
+          <g class="lk-tag">
+            <text class="lk-echo-tag"  text-anchor="end" x="0" y="0" font-size="40">KlinCom</text>
+            <text class="lk-solid-tag" text-anchor="end" x="0" y="0" font-size="40">KlinCom</text>
+          </g>
+          <text class="lk-meta" x="8" y="228">est. 2025 · ®</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="panel panel--light">
+      <span class="cap">на светлом · #F2F0EB</span>
+      <!-- === DROP-IN: light theme (тёмные буквы) === -->
+      <div class="lk" data-theme="light" data-lockup>
+        <svg viewBox="0 0 680 250" role="img" aria-label="Maxim Klin — KlinCom">
+          <g class="lk-name">
+            <text class="lk-echo"   x="8" y="150" font-size="98">Maxim Klin</text>
+            <text class="lk-solid"  x="8" y="150" font-size="98">Maxim Klin</text>
+          </g>
+          <g class="lk-tag">
+            <text class="lk-echo-tag"  text-anchor="end" x="0" y="0" font-size="40">KlinCom</text>
+            <text class="lk-solid-tag" text-anchor="end" x="0" y="0" font-size="40">KlinCom</text>
+          </g>
+          <text class="lk-meta" x="8" y="228">est. 2025 · ®</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var EASE = 'cubic-bezier(.2,.8,.2,1)';
+
+  // — авто-посадка бренд-тега «KlinCom» под правым краем имени —
+  function placeTag(lk){
+    var name = lk.querySelector('.lk-solid');
+    var nb = name.getBBox();
+    var rightEdge = nb.x + nb.width;
+    var baseY = 150;                 // базовая линия имени
+    var tagY = baseY + 54;           // ниже базовой линии
+    lk.querySelectorAll('.lk-solid-tag,.lk-echo-tag').forEach(function(t){
+      t.setAttribute('x', rightEdge.toFixed(1));
+      t.setAttribute('y', tagY.toFixed(1));
+    });
+  }
+
+  // — intro: заливка первой, контур догоняет из большего сдвига —
+  function intro(lk){
+    if(reduced) return;
+    lk.querySelectorAll('.lk-solid,.lk-solid-tag').forEach(function(el,i){
+      el.animate([{opacity:0,transform:'translateY(9px)'},{opacity:1,transform:'none'}],
+        {duration:400,delay:i*45,easing:EASE,fill:'backwards'});
+    });
+    lk.querySelectorAll('.lk-echo').forEach(function(el){
+      el.animate([
+        {opacity:0,transform:'translate(22px,22px) skewX(-13deg)'},
+        {opacity:1,transform:'translate(7px,6px) skewX(-7deg)'}
+      ],{duration:450,delay:150,easing:EASE,fill:'backwards'});
+    });
+    lk.querySelectorAll('.lk-echo-tag').forEach(function(el){
+      el.animate([
+        {opacity:0,transform:'translate(12px,12px) skewX(-12deg)'},
+        {opacity:1,transform:'translate(3px,3px) skewX(-6deg)'}
+      ],{duration:450,delay:210,easing:EASE,fill:'backwards'});
+    });
+  }
+
+  // — mobile: tap-glitch (эхо дёргается и снапит назад) —
+  function bindTap(lk){
+    lk.addEventListener('touchstart', function(){
+      if(reduced) return;
+      lk.classList.add('is-tap');
+      setTimeout(function(){ lk.classList.remove('is-tap'); }, 260);
+    }, {passive:true});
+  }
+
+  var lockups = [].slice.call(document.querySelectorAll('[data-lockup]'));
+  function boot(){
+    lockups.forEach(function(lk){ placeTag(lk); bindTap(lk); intro(lk); });
+  }
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(boot); setTimeout(boot,1200); }
+  else { window.addEventListener('load', boot); }
+
+  // — стенд-контролы —
+  document.getElementById('fontSeg').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    document.querySelectorAll('#fontSeg button').forEach(function(x){ x.setAttribute('aria-pressed', x===b); });
+    document.body.classList.toggle('font-archivo', b.dataset.font==='archivo');
+    // переизмерить ширину после смены гарнитуры
+    if(document.fonts&&document.fonts.ready){ document.fonts.ready.then(function(){ lockups.forEach(placeTag); }); }
+    setTimeout(function(){ lockups.forEach(placeTag); }, 60);
+  });
+  document.getElementById('accentBtn').addEventListener('click', function(e){
+    var on = e.currentTarget.getAttribute('aria-pressed')!=='true';
+    e.currentTarget.setAttribute('aria-pressed', on);
+    lockups.forEach(function(lk){ lk.classList.toggle('accent', on); });
+  });
+  document.getElementById('replayBtn').addEventListener('click', function(){ lockups.forEach(intro); });
+})();
+</script>
+</body>
+</html>

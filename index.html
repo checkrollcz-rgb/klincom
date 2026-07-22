@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:#0B0A09;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;transition:color .2s ease;}
+  a:hover{color:#FF5A1F;}
+  button{font:inherit;}
+  button:focus-visible,a:focus-visible{outline:2px solid #FF5A1F;outline-offset:3px;}
+  [data-card]:focus-visible{outline:2px solid #FF5A1F;outline-offset:5px;}
+  ::selection{background:#FF5A1F;color:#0B0A09;}
+  .hscroll{scrollbar-width:none;-ms-overflow-style:none;}
+  .hscroll::-webkit-scrollbar{display:none;}
+  .tb-scroll{scrollbar-width:none;-ms-overflow-style:none;}
+  .tb-scroll::-webkit-scrollbar{display:none;}
+  @keyframes pulseDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.8);}}
+  @keyframes spinSlow{to{transform:rotate(360deg);}}
+  @keyframes driftArrow{0%{transform:translateX(0);opacity:.2;}45%{opacity:1;}100%{transform:translateX(7px);opacity:0;}}
+  .drift-a{animation:driftArrow 1.9s ease-in-out infinite;}
+  .drift-a:nth-child(2){animation-delay:.35s;}
+  @media (prefers-reduced-motion: reduce){.drift-a{animation:none;}}
+  /* ===== KINETIC WORDMARK (лого-локап с эхо-смещением) ===== */
+  .lk{--ink:#F2F0EB;display:inline-block;line-height:0;-webkit-tap-highlight-color:transparent;}
+  .lk svg{display:block;height:auto;overflow:visible;}
+  .lk text{font-family:'Clash Display',sans-serif;font-weight:700;letter-spacing:-0.02em;}
+  .lk .lk-solid{fill:var(--ink);filter:drop-shadow(0 3px 7px rgba(0,0,0,0.5));}
+  .lk .lk-solid-tag{fill:var(--ink);}
+  .lk .lk-tag{filter:drop-shadow(0 2px 5px rgba(0,0,0,0.5));}
+  .lk .lk-o-ring,.lk .lk-o-bar{stroke:var(--ink);fill:none;}
+  .lk .lk-echo{fill:none;stroke:#FF5A1F;stroke-width:1.4;vector-effect:non-scaling-stroke;transform-box:fill-box;transform-origin:0% 100%;transform:translate(9px,6px) skewX(-7deg);transition:transform .28s cubic-bezier(.2,.8,.2,1);}
+  .lk:hover .lk-echo,.lk.is-tap .lk-echo{transform:translate(15px,10px) skewX(-12deg);}
+  .lk--hero svg{width:clamp(210px,20vw,300px);}
+  /* Hero: две колонки (текст + стек-карта) */
+  .hero-row{display:flex;align-items:flex-start;gap:clamp(24px,4.5vw,60px);width:100%;}
+  .hero-left{flex:1.15 1 0;min-width:0;}
+  .hero-id{flex:0.85 1 0;min-width:0;display:flex;flex-direction:column;align-items:flex-end;gap:24px;}
+  /* горизонтальный пайплайн-скиллы */
+  .skills-steps{display:flex;align-items:flex-end;justify-content:space-between;max-width:560px;padding-top:44px;}
+  .step{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:9px;transform:translateY(calc(var(--i) * -11px));}
+  .step-num{font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(24px,2.7vw,36px);letter-spacing:-0.02em;color:#FF5A1F;line-height:1;}
+  .step-tread{width:36px;height:2px;background:rgba(255,90,31,0.4);border-radius:2px;}
+  .step-label{font-family:'Manrope',sans-serif;font-weight:600;font-size:clamp(11px,1.1vw,13px);color:rgba(242,240,235,0.85);text-align:center;white-space:nowrap;}
+  /* паспорт / ID-карта */
+  .id-card{width:100%;margin-top:clamp(28px,6vh,64px);border-radius:18px;border:1px solid rgba(255,255,255,0.14);background:rgba(255,255,255,0.035);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 20px 50px rgba(0,0,0,0.4);overflow:hidden;display:flex;align-items:stretch;}
+  .id-photo{flex:0 0 auto;width:clamp(112px,38%,148px);min-height:210px;background:#151311 url('assets/photo.png') center/cover no-repeat;border-right:1px solid rgba(255,255,255,0.1);display:flex;align-items:flex-end;justify-content:center;}
+  .id-fields{flex:1 1 auto;min-width:0;padding:20px 22px;display:flex;flex-direction:column;justify-content:center;gap:13px;}
+  .id-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.14em;color:rgba(255,255,255,0.4);margin-bottom:3px;}
+  .id-value{font-family:'Manrope',sans-serif;font-weight:600;font-size:14px;line-height:1.3;color:#F2F0EB;}
+  /* текстуры карточек по языку (EN — зернистая волна, подмешивается blend-mode, чтобы текст читался) */
+  /* Бегущая лента скидки (низ card 05): жёлтая, текст выбитый, едет влево */
+  .promo-tape{height:34px;background:#F2F0EB;overflow:hidden;display:flex;align-items:center;flex:0 0 auto;}
+  .promo-track{display:flex;white-space:nowrap;animation:tapeMove 24s linear infinite;will-change:transform;}
+  .promo-unit{display:flex;align-items:center;gap:16px;padding-right:16px;white-space:nowrap;font-family:'Unbounded',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.05em;text-transform:uppercase;color:#0B0A09;}
+  /* разделитель = фирменное перечёркнутое кольцо из логотипа KlinC⊖m */
+  .promo-unit i{position:relative;width:11px;height:11px;border:2.5px solid #FF5A1F;border-radius:50%;flex:0 0 auto;}
+  .promo-unit i::after{content:'';position:absolute;left:-4px;right:-4px;top:50%;height:2.5px;margin-top:-1.25px;background:#FF5A1F;}
+  @keyframes tapeMove{to{transform:translateX(-50%);}}
+  /* «Что я построил»: ховер на макап — текст сворачивается, фото растёт вниз */
+  .wk > [data-gallery]{flex-grow:0;transition:flex-grow .45s cubic-bezier(.4,0,.2,1);}
+  .wk > p,.wk > button,.wk > a{max-height:240px;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .2s ease,padding .4s ease,border-width .4s ease;}
+  .wk:has(> [data-gallery]:hover) > [data-gallery]{flex-grow:1;}
+  .wk:has(> [data-gallery]:hover) > p,
+  .wk:has(> [data-gallery]:hover) > button,
+  .wk:has(> [data-gallery]:hover) > a{max-height:0;opacity:0;margin:0;padding-top:0;padding-bottom:0;border-top-width:0;border-bottom-width:0;}
+  /* «Как работаем»: маркер-выделение + шаги с прогресс-полоской */
+  .mk{background:linear-gradient(180deg,transparent 40%,rgba(255,90,31,0.35) 40%,rgba(255,90,31,0.35) 92%,transparent 92%);padding:0 2px;border-radius:2px;}
+  .pstep{background:rgba(255,255,255,0.06);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:16px 17px 15px;display:flex;flex-direction:column;gap:10px;transition:border-color .25s ease,transform .25s ease;}
+  .pstep:hover{border-color:#FF5A1F;transform:translateY(-4px);}
+  .pstep svg{color:rgba(242,240,235,0.5);transition:color .25s ease;flex:0 0 auto;}
+  .pstep:hover svg{color:#FF5A1F;}
+  .pstep-num{font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(19px,1.9vw,26px);letter-spacing:-0.02em;color:#FF5A1F;line-height:1;}
+  .pstep-bar{height:3px;border-radius:3px;background:rgba(255,255,255,0.1);overflow:hidden;}
+  .pstep-fill{height:100%;border-radius:3px;background:#FF5A1F;box-shadow:0 0 8px rgba(255,90,31,0.7);transition:width .45s cubic-bezier(.4,0,.2,1);}
+  .pstep:hover .pstep-fill{width:100% !important;}
+  .tex-dark{--t:url('assets/tex-dark.jpg');}
+  .tex-light{--t:url('assets/tex-light.png');}
+  [data-lang="en"] .tex-dark,[data-lang="ua"] .tex-dark{--t:url('assets/en_tex-dark.jpg');background-blend-mode:soft-light;}
+  [data-lang="en"] .tex-light,[data-lang="ua"] .tex-light{--t:url('assets/en_tex-light.jpg');background-blend-mode:multiply;}
+  @media(max-width:860px){
+    .hero-row{flex-direction:column;align-items:stretch;gap:34px;}
+    .hero-left{flex:0 0 auto;}
+    .hero-id{align-items:flex-start;}
+    .id-card{margin-top:6px;}
+    .lk--hero svg{width:min(300px,70vw);}
+  }
+  @media (prefers-reduced-motion: reduce){.lk .lk-echo{transition:none;}}
+</style>
+</helmet>
+<div ref="{{ setRoot }}" data-lang="{{ lang }}" style="position:relative;height:100vh;overflow:hidden;font-family:'Manrope',sans-serif;background-color:#0B0A09;color:#F2F0EB;">
+  <!-- ===== AMBIENT BACKGROUND VIDEO (позади колоды, параллакс влево) ===== -->
+  <div style="position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;">
+    <video ref="{{ setBgVideo }}" src="assets/bg.mp4" autoplay muted loop playsinline preload="auto" style="position:absolute;top:50%;left:50%;width:112%;height:112%;transform:translate(-50%,-50%) scaleX(-1);object-fit:cover;opacity:0.6;filter:grayscale(0.2) brightness(0.85) contrast(1.05);"></video>
+    <div style="position:absolute;inset:0;background:rgba(11,10,9,0.3);"></div>
+  </div>
+  <!-- ===== TOPBAR (pill-навигация + язык) ===== -->
+  <div ref="{{ setIslandWrap }}" style="position:fixed;top:18px;left:50%;transform:translateX(-50%);z-index:200;">
+    <div class="tb-scroll" style="display:flex;align-items:center;gap:2px;max-width:calc(100vw - 24px);overflow-x:auto;background:rgba(12,11,10,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:999px;box-shadow:0 12px 32px rgba(0,0,0,0.55);padding:6px;">
+      <button aria-label="{{ t.nav0 }}" onClick="{{ n0.go }}" style="display:flex;align-items:center;flex:0 0 auto;background:{{ n0.bg }};color:{{ n0.fg }};border:none;border-radius:999px;padding:9px 11px;cursor:pointer;transition:background .25s ease,color .25s ease;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h14V9.5"/></svg>
+        <span style="max-width:{{ n0.mw }};opacity:{{ n0.op }};margin-left:{{ n0.ml }};overflow:hidden;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;transition:max-width .32s cubic-bezier(.4,0,.2,1),opacity .25s ease,margin-left .32s ease;">{{ t.nav0 }}</span>
+      </button>
+      <button aria-label="{{ t.nav1 }}" onClick="{{ n1.go }}" style="display:flex;align-items:center;flex:0 0 auto;background:{{ n1.bg }};color:{{ n1.fg }};border:none;border-radius:999px;padding:9px 11px;cursor:pointer;transition:background .25s ease,color .25s ease;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/></svg>
+        <span style="max-width:{{ n1.mw }};opacity:{{ n1.op }};margin-left:{{ n1.ml }};overflow:hidden;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;transition:max-width .32s cubic-bezier(.4,0,.2,1),opacity .25s ease,margin-left .32s ease;">{{ t.nav1 }}</span>
+      </button>
+      <button aria-label="{{ t.nav2 }}" onClick="{{ n2.go }}" style="display:flex;align-items:center;flex:0 0 auto;background:{{ n2.bg }};color:{{ n2.fg }};border:none;border-radius:999px;padding:9px 11px;cursor:pointer;transition:background .25s ease,color .25s ease;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>
+        <span style="max-width:{{ n2.mw }};opacity:{{ n2.op }};margin-left:{{ n2.ml }};overflow:hidden;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;transition:max-width .32s cubic-bezier(.4,0,.2,1),opacity .25s ease,margin-left .32s ease;">{{ t.nav2 }}</span>
+      </button>
+      <button aria-label="{{ t.nav3 }}" onClick="{{ n3.go }}" style="display:flex;align-items:center;flex:0 0 auto;background:{{ n3.bg }};color:{{ n3.fg }};border:none;border-radius:999px;padding:9px 11px;cursor:pointer;transition:background .25s ease,color .25s ease;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8.5 4.7-8.5 4.7-8.5-4.7L12 3z"/><path d="M4 13l8 4.4 8-4.4"/><path d="M4 17l8 4.4 8-4.4"/></svg>
+        <span style="max-width:{{ n3.mw }};opacity:{{ n3.op }};margin-left:{{ n3.ml }};overflow:hidden;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;transition:max-width .32s cubic-bezier(.4,0,.2,1),opacity .25s ease,margin-left .32s ease;">{{ t.nav3 }}</span>
+      </button>
+      <button aria-label="{{ t.nav4 }}" onClick="{{ n4.go }}" style="display:flex;align-items:center;flex:0 0 auto;background:{{ n4.bg }};color:{{ n4.fg }};border:none;border-radius:999px;padding:9px 11px;cursor:pointer;transition:background .25s ease,color .25s ease;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="4.5" cy="6" r="1.4" fill="currentColor" stroke="none"/><path d="M9 6h11"/><circle cx="4.5" cy="12" r="1.4" fill="currentColor" stroke="none"/><path d="M9 12h11"/><circle cx="4.5" cy="18" r="1.4" fill="currentColor" stroke="none"/><path d="M9 18h11"/></svg>
+        <span style="max-width:{{ n4.mw }};opacity:{{ n4.op }};margin-left:{{ n4.ml }};overflow:hidden;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;transition:max-width .32s cubic-bezier(.4,0,.2,1),opacity .25s ease,margin-left .32s ease;">{{ t.nav4 }}</span>
+      </button>
+      <button aria-label="{{ t.nav5 }}" onClick="{{ n5.go }}" style="display:flex;align-items:center;flex:0 0 auto;background:{{ n5.bg }};color:{{ n5.fg }};border:none;border-radius:999px;padding:9px 11px;cursor:pointer;transition:background .25s ease,color .25s ease;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7.5l8 5.5 8-5.5"/></svg>
+        <span style="max-width:{{ n5.mw }};opacity:{{ n5.op }};margin-left:{{ n5.ml }};overflow:hidden;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;transition:max-width .32s cubic-bezier(.4,0,.2,1),opacity .25s ease,margin-left .32s ease;">{{ t.nav5 }}</span>
+      </button>
+      <div style="width:1px;height:20px;background:rgba(255,255,255,0.14);margin:0 7px;flex:0 0 auto;"></div>
+      <sc-for list="{{ langs }}" as="l" hint-placeholder-count="3"><button aria-label="{{ l.code }}" onClick="{{ l.go }}" style="font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10px;letter-spacing:0.08em;padding:8px 10px;border:none;border-radius:999px;cursor:pointer;background:{{ l.bg }};color:{{ l.fg }};transition:background .2s ease,color .2s ease;flex:0 0 auto;">{{ l.code }}</button></sc-for>
+    </div>
+  </div>
+
+  <!-- ===== HORIZONTAL DECK ===== -->
+  <div ref="{{ setTrack }}" class="hscroll" style="position:relative;z-index:1;height:100vh;display:flex;align-items:center;gap:28px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x proximity;">
+    <!-- нить, связывающая карточки (видна только в зазорах) -->
+    <div ref="{{ setThread }}" aria-hidden="true" style="position:absolute;left:0;top:50%;height:1px;width:0;background:repeating-linear-gradient(90deg,rgba(242,240,235,0.3) 0 10px,transparent 10px 22px);"></div>
+
+    <!-- CARD 01 — HERO (dark) -->
+    <section data-card data-theme="dark" data-screen-label="Hero" tabindex="0" style="position:relative;flex:0 0 auto;width:min(1360px,92vw);height:min(820px,86vh);border-radius:28px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);box-shadow:0 40px 120px rgba(0,0,0,0.55);scroll-snap-align:center;background:#0B0A09;">
+      <div class="card-tex tex-dark" style="position:absolute;inset:0;background-color:#0B0A09;background-image:var(--t);background-size:cover;background-position:center;background-repeat:no-repeat;"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,10,9,0.58) 0%,rgba(11,10,9,0.24) 34%,rgba(11,10,9,0.34) 66%,rgba(11,10,9,0.7) 100%);"></div>
+
+
+      <div style="position:absolute;inset:0;z-index:2;padding:84px clamp(28px,4vw,60px) clamp(28px,4vw,52px);display:flex;flex-direction:column;justify-content:center;pointer-events:none;">
+        <div class="hero-row">
+         <div class="hero-left">
+          <h1 style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(28px,3.6vw,50px);line-height:1.08;letter-spacing:-0.03em;margin:0;text-shadow:0 6px 40px rgba(0,0,0,0.55);">{{ t.h1a }} <span style="color:#FF5A1F;">{{ t.h1b }}</span></h1>
+          <p style="font-family:'Manrope',sans-serif;font-weight:500;font-size:clamp(15px,1.4vw,19px);line-height:1.5;color:rgba(242,240,235,0.72);max-width:52ch;margin:22px 0 0;">
+            {{ t.sub1 }}<br>{{ t.sub2 }}
+          </p>
+          <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:30px;pointer-events:auto;">
+            <button onClick="{{ goContact }}" style="display:inline-flex;align-items:center;gap:10px;background:#FF5A1F;color:#0B0A09;font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(15px,1.3vw,17px);border:none;padding:15px 28px;border-radius:999px;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;" style-hover="transform:translateY(-2px);box-shadow:0 14px 36px rgba(255,90,31,0.45);">{{ t.btnD }} <span style="font-size:1.1em;">→</span></button>
+            <a href="#" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#F2F0EB;font-family:'Manrope',sans-serif;font-weight:600;font-size:clamp(15px,1.3vw,17px);border:1px solid rgba(255,255,255,0.28);padding:15px 26px;border-radius:999px;transition:border-color .2s ease,background .2s ease;" style-hover="border-color:#FF5A1F;background:rgba(255,255,255,0.05);">{{ t.btnTg }}</a>
+          </div>
+          <div style="margin-top:26px;">
+            <div class="skills-steps">
+              <div class="step" style="--i:0"><span class="step-num">1</span><span class="step-tread"></span><span class="step-label">{{ t.sk1 }}</span></div>
+              <div class="step" style="--i:1"><span class="step-num">2</span><span class="step-tread"></span><span class="step-label">{{ t.sk2 }}</span></div>
+              <div class="step" style="--i:2"><span class="step-num">3</span><span class="step-tread"></span><span class="step-label">{{ t.sk3 }}</span></div>
+              <div class="step" style="--i:3"><span class="step-num">4</span><span class="step-tread"></span><span class="step-label">{{ t.sk4 }}</span></div>
+              <div class="step" style="--i:4"><span class="step-num">5</span><span class="step-tread"></span><span class="step-label">{{ t.sk5 }}</span></div>
+            </div>
+          </div>
+         </div>
+         <div class="hero-id">
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:7px;">
+            <div style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(28px,3.1vw,44px);letter-spacing:-0.02em;color:#F2F0EB;line-height:1;">KlinCom</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:clamp(9px,0.8vw,11px);font-weight:700;letter-spacing:0.14em;color:#FF5A1F;white-space:nowrap;">{{ t.tagline }}</div>
+          </div>
+          <div class="id-card">
+            <div class="id-photo"></div>
+            <div class="id-fields">
+              <div><div class="id-label">{{ t.pn }}</div><div class="id-value">Maxim Klin</div></div>
+              <div><div class="id-label">{{ t.pr }}</div><div class="id-value">{{ t.vr }}</div></div>
+              <div><div class="id-label">{{ t.pl }}</div><div class="id-value">{{ t.vl }}</div></div>
+              <div><div class="id-label">{{ t.pe }}</div><div class="id-value">{{ t.ve }}</div></div>
+              <div><div class="id-label">{{ t.pa }}</div><div class="id-value">{{ t.va }}</div></div>
+            </div>
+          </div>
+         </div>
+        </div>
+      </div>
+      <button onClick="{{ goNext }}" aria-label="Следующий экран" style="position:absolute;right:clamp(18px,2.5vw,34px);bottom:clamp(16px,2.2vw,26px);z-index:3;display:flex;align-items:center;gap:10px;background:transparent;border:none;cursor:pointer;color:rgba(242,240,235,0.55);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:11px;letter-spacing:0.16em;transition:color .2s ease;" style-hover="color:#FF5A1F;">
+        {{ t.listai }}
+        <span style="display:flex;align-items:center;">
+          <svg class="drift-a" width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M4 2.5L8 6l-4 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="drift-a" width="11" height="11" viewBox="0 0 12 12" fill="none" style="margin-left:-4px;"><path d="M4 2.5L8 6l-4 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+      </button>
+    </section>
+
+    <!-- CARD 02 — ПОДХОД (light) -->
+    <section data-card data-theme="light" data-screen-label="Positioning" tabindex="0" style="position:relative;flex:0 0 auto;width:min(1360px,92vw);height:min(820px,86vh);border-radius:28px;overflow:hidden;border:1px solid rgba(11,10,9,0.12);box-shadow:0 40px 120px rgba(0,0,0,0.55);scroll-snap-align:center;background:#F2F0EB;">
+      <div class="card-tex tex-light" style="position:absolute;inset:0;background-color:#F2F0EB;background-image:var(--t);background-size:cover;background-position:center;background-repeat:no-repeat;"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(120deg,rgba(242,240,235,0.55) 0%,rgba(242,240,235,0.28) 50%,rgba(242,240,235,0.55) 100%);"></div>
+      <div style="position:absolute;inset:0;z-index:2;color:#0B0A09;padding:96px clamp(28px,4vw,64px) clamp(28px,4vw,56px);display:flex;flex-direction:column;justify-content:center;">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:rgba(11,10,9,0.55);margin-bottom:36px;">{{ t.sec2 }}</div>
+        <h2 style="font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(34px,5.4vw,78px);line-height:1.02;letter-spacing:-0.02em;margin:0;max-width:18ch;">
+          <span style="display:block;">{{ t.a1 }}</span>
+          <span style="display:block;margin-left:12%;color:#FF5A1F;">{{ t.a2 }}</span>
+          <span style="display:block;margin-left:4%;">{{ t.a3 }}</span>
+        </h2>
+        <p style="font-family:'Manrope',sans-serif;font-size:clamp(16px,1.4vw,20px);line-height:1.5;color:rgba(11,10,9,0.62);max-width:48ch;margin:40px 0 0 auto;text-align:right;">
+          {{ t.a4 }}
+        </p>
+      </div>
+    </section>
+
+    <!-- CARD 03 — РАБОТЫ (dark) -->
+    <section data-card data-theme="dark" data-screen-label="Works" tabindex="0" style="position:relative;flex:0 0 auto;width:min(1360px,92vw);height:min(820px,86vh);border-radius:28px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);box-shadow:0 40px 120px rgba(0,0,0,0.55);scroll-snap-align:center;background:#0B0A09;">
+      <div class="card-tex tex-dark" style="position:absolute;inset:0;background-color:#0B0A09;background-image:var(--t);background-size:cover;background-position:center;background-repeat:no-repeat;"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,10,9,0.62) 0%,rgba(11,10,9,0.34) 45%,rgba(11,10,9,0.66) 100%);"></div>
+      <div style="position:absolute;inset:0;z-index:2;padding:92px clamp(28px,4vw,64px) clamp(28px,4vw,52px);display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:clamp(18px,3vw,44px);flex-wrap:wrap;">
+          <div style="flex:1 1 420px;min-width:0;">
+            <div style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:rgba(255,255,255,0.6);">{{ t.sec3 }}</span>
+              <h2 style="font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(28px,3.6vw,50px);letter-spacing:-0.02em;margin:0;">{{ t.c3h2 }}</h2>
+            </div>
+            <p style="font-family:'Manrope',sans-serif;font-weight:500;font-size:clamp(13px,1.15vw,16px);line-height:1.55;color:rgba(242,240,235,0.65);max-width:72ch;margin:14px 0 0;">
+              {{ t.c3sub }}
+            </p>
+          </div>
+          <div style="flex:0 1 350px;margin-top:8px;padding:14px 18px;border:1px solid rgba(255,255,255,0.12);border-radius:14px;background:rgba(255,255,255,0.04);display:flex;flex-direction:column;align-items:flex-start;gap:11px;">
+            <p style="font-family:'Manrope',sans-serif;font-size:clamp(12px,1vw,14px);line-height:1.45;color:rgba(242,240,235,0.7);margin:0;"><span style="color:#F2F0EB;font-weight:700;">{{ t.catchB }}</span> {{ t.catchT }}</p>
+            <button onClick="{{ goContact }}" style="display:inline-flex;align-items:center;gap:9px;background:#FF5A1F;color:#0B0A09;font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(12px,1vw,14px);border:none;padding:10px 19px;border-radius:999px;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;" style-hover="transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,90,31,0.45);">{{ t.btnD }} <span style="font-size:1.1em;">→</span></button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:auto;">
+          <sc-for list="{{ works }}" as="w" hint-placeholder-count="4">
+            <article style="background:rgba(255,255,255,0.06);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:20px 20px 18px;display:flex;flex-direction:column;gap:12px;transition:border-color .25s ease,transform .25s ease;" style-hover="border-color:#FF5A1F;transform:translateY(-4px);">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.12em;color:rgba(255,255,255,0.45);">{{ w.no }}</span>
+              <h3 style="font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(15px,1.3vw,19px);line-height:1.25;letter-spacing:-0.02em;margin:0;">{{ w.title }}</h3>
+              <p style="font-family:'Manrope',sans-serif;font-size:clamp(12px,1vw,14px);line-height:1.55;color:rgba(242,240,235,0.68);margin:0;flex:1 1 auto;">{{ w.text }}</p>
+              <div style="padding-top:13px;border-top:1px solid rgba(255,255,255,0.1);display:flex;align-items:baseline;justify-content:space-between;gap:8px;">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.16em;color:rgba(255,255,255,0.45);">{{ t.priceLbl }}</span>
+                <span style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(16px,1.5vw,21px);letter-spacing:-0.02em;color:#FF5A1F;white-space:nowrap;">{{ w.price }}</span>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARD 04 — СТЕК (light) -->
+    <section data-card data-theme="light" data-screen-label="Stack" tabindex="0" style="position:relative;flex:0 0 auto;width:min(1360px,92vw);height:min(820px,86vh);border-radius:28px;overflow:hidden;border:1px solid rgba(11,10,9,0.12);box-shadow:0 40px 120px rgba(0,0,0,0.55);scroll-snap-align:center;background:#F2F0EB;">
+      <div class="card-tex tex-light" style="position:absolute;inset:0;background-color:#F2F0EB;background-image:var(--t);background-size:cover;background-position:center;background-repeat:no-repeat;"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(242,240,235,0.52) 0%,rgba(242,240,235,0.26) 45%,rgba(242,240,235,0.55) 100%);"></div>
+      <div style="position:absolute;inset:0;z-index:2;color:#0B0A09;padding:76px clamp(28px,4vw,64px) clamp(20px,2.6vw,40px);display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:rgba(11,10,9,0.55);">{{ t.sec4 }}</span>
+          <h2 style="font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(28px,3.6vw,50px);letter-spacing:-0.02em;margin:0;">{{ t.c4h2 }}</h2>
+        </div>
+        <p style="font-family:'Manrope',sans-serif;font-weight:500;font-size:clamp(13px,1.15vw,16px);line-height:1.55;color:rgba(11,10,9,0.62);max-width:74ch;margin:12px 0 0;">
+          {{ t.c4sub }}
+        </p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:auto;">
+          <article class="wk" style="background:rgba(11,10,9,0.04);border:1px solid rgba(11,10,9,0.12);border-radius:16px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:10px;transition:border-color .25s ease,transform .25s ease;" style-hover="border-color:#FF5A1F;transform:translateY(-4px);">
+            <div data-gallery="assets/work-1.jpg|assets/work-1.1.png|assets/work-1.2.jpg" title="Клик — следующий скриншот" style="position:relative;height:clamp(46px,7.5vh,100px);border-radius:10px;overflow:hidden;cursor:pointer;background-color:#E9E6DF;background-image:repeating-linear-gradient(115deg,rgba(11,10,9,0.05) 0 10px,transparent 10px 20px);"></div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+              <h3 style="font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(15px,1.35vw,19px);letter-spacing:-0.02em;margin:0;">Pulsone</h3>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:rgba(11,10,9,0.45);">{{ t.w1meta }}</span>
+            </div>
+            <button onClick="{{ goPrices }}" style="align-self:flex-start;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.07em;color:#FF5A1F;background:rgba(255,90,31,0.08);border:1px solid rgba(255,90,31,0.4);border-radius:999px;padding:4px 11px;cursor:pointer;text-align:left;transition:background .2s ease;" style-hover="background:rgba(255,90,31,0.16);">{{ t.w1chip }}</button>
+            <p style="font-family:'Manrope',sans-serif;font-size:clamp(11px,0.95vw,13px);line-height:1.5;color:rgba(11,10,9,0.68);margin:0;">{{ t.w1d }}</p>
+            <p style="border-left:2px solid #FF5A1F;padding-left:10px;font-family:'Manrope',sans-serif;font-weight:600;font-size:clamp(10.5px,0.9vw,12.5px);line-height:1.45;color:rgba(11,10,9,0.8);margin:0;flex:1 1 auto;">{{ t.w1s }}</p>
+            <a href="#" style="align-self:flex-start;display:inline-flex;align-items:center;gap:8px;font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(12px,1vw,13.5px);color:#0B0A09;border:1px solid rgba(11,10,9,0.3);border-radius:999px;padding:8px 16px;transition:border-color .2s ease,background .2s ease;" style-hover="border-color:#FF5A1F;background:rgba(255,90,31,0.07);">{{ t.w1btn }} <span>↗</span></a>
+          </article>
+          <article class="wk" style="background:rgba(11,10,9,0.04);border:1px solid rgba(11,10,9,0.12);border-radius:16px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:10px;transition:border-color .25s ease,transform .25s ease;" style-hover="border-color:#FF5A1F;transform:translateY(-4px);">
+            <div data-gallery="assets/work-2.png|assets/work-2.1.png|assets/work-2.2.png" title="Клик — следующий скриншот" style="position:relative;height:clamp(46px,7.5vh,100px);border-radius:10px;overflow:hidden;cursor:pointer;background-color:#E9E6DF;background-image:repeating-linear-gradient(115deg,rgba(11,10,9,0.05) 0 10px,transparent 10px 20px);"></div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+              <h3 style="font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(15px,1.35vw,19px);letter-spacing:-0.02em;margin:0;">ToolCart</h3>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:rgba(11,10,9,0.45);">{{ t.w2meta }}</span>
+            </div>
+            <button onClick="{{ goPrices }}" style="align-self:flex-start;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.07em;color:#FF5A1F;background:rgba(255,90,31,0.08);border:1px solid rgba(255,90,31,0.4);border-radius:999px;padding:4px 11px;cursor:pointer;text-align:left;transition:background .2s ease;" style-hover="background:rgba(255,90,31,0.16);">{{ t.w2chip }}</button>
+            <p style="font-family:'Manrope',sans-serif;font-size:clamp(11px,0.95vw,13px);line-height:1.5;color:rgba(11,10,9,0.68);margin:0;">{{ t.w2d }}</p>
+            <p style="border-left:2px solid #FF5A1F;padding-left:10px;font-family:'Manrope',sans-serif;font-weight:600;font-size:clamp(10.5px,0.9vw,12.5px);line-height:1.45;color:rgba(11,10,9,0.8);margin:0;flex:1 1 auto;">{{ t.w2s }}</p>
+            <a href="#" style="align-self:flex-start;display:inline-flex;align-items:center;gap:8px;font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(12px,1vw,13.5px);color:#0B0A09;border:1px solid rgba(11,10,9,0.3);border-radius:999px;padding:8px 16px;transition:border-color .2s ease,background .2s ease;" style-hover="border-color:#FF5A1F;background:rgba(255,90,31,0.07);">{{ t.w2btn }} <span>↗</span></a>
+          </article>
+          <article class="wk" style="background:rgba(11,10,9,0.04);border:1px solid rgba(11,10,9,0.12);border-radius:16px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:10px;transition:border-color .25s ease,transform .25s ease;" style-hover="border-color:#FF5A1F;transform:translateY(-4px);">
+            <div data-gallery="assets/work-3.png|assets/work-3.1.png" title="Клик — следующий скриншот" style="position:relative;height:clamp(46px,7.5vh,100px);border-radius:10px;overflow:hidden;cursor:pointer;background-color:#E9E6DF;background-image:repeating-linear-gradient(115deg,rgba(11,10,9,0.05) 0 10px,transparent 10px 20px);">
+              <span style="position:absolute;bottom:6px;left:9px;z-index:2;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:0.12em;color:rgba(242,240,235,0.9);background:rgba(11,10,9,0.55);padding:2px 6px;border-radius:5px;">{{ t.hidden }}</span>
+            </div>
+            <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+              <h3 style="font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(15px,1.35vw,19px);letter-spacing:-0.02em;margin:0;">{{ t.w3t }}</h3>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:0.12em;color:rgba(11,10,9,0.45);">{{ t.w3meta }}</span>
+            </div>
+            <button onClick="{{ goPrices }}" style="align-self:flex-start;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.07em;color:#FF5A1F;background:rgba(255,90,31,0.08);border:1px solid rgba(255,90,31,0.4);border-radius:999px;padding:4px 11px;cursor:pointer;text-align:left;transition:background .2s ease;" style-hover="background:rgba(255,90,31,0.16);">{{ t.w3chip }}</button>
+            <p style="font-family:'Manrope',sans-serif;font-size:clamp(11px,0.95vw,13px);line-height:1.5;color:rgba(11,10,9,0.68);margin:0;">{{ t.w3d }}</p>
+            <p style="border-left:2px solid #FF5A1F;padding-left:10px;font-family:'Manrope',sans-serif;font-weight:600;font-size:clamp(10.5px,0.9vw,12.5px);line-height:1.45;color:rgba(11,10,9,0.8);margin:0;flex:1 1 auto;">{{ t.w3s }}</p>
+          </article>
+        </div>
+        <div style="margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:9px;border-top:1px solid rgba(11,10,9,0.12);">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:clamp(9px,0.85vw,11px);letter-spacing:0.08em;color:rgba(11,10,9,0.5);margin:0;">{{ t.stackLine }}</p>
+          <button onClick="{{ goContact }}" style="display:inline-flex;align-items:center;gap:9px;background:#FF5A1F;color:#0B0A09;font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(13px,1.1vw,15px);border:none;padding:11px 22px;border-radius:999px;cursor:pointer;flex:0 0 auto;transition:transform .2s ease,box-shadow .2s ease;" style-hover="transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,90,31,0.45);">{{ t.btnD }} <span style="font-size:1.1em;">→</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARD 05 — ПРОЦЕСС (dark) -->
+    <section data-card data-theme="dark" data-screen-label="Process" tabindex="0" style="position:relative;flex:0 0 auto;width:min(1360px,92vw);height:min(820px,86vh);border-radius:28px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);box-shadow:0 40px 120px rgba(0,0,0,0.55);scroll-snap-align:center;background:#0B0A09;">
+      <div class="card-tex tex-dark" style="position:absolute;inset:0;background-color:#0B0A09;background-image:var(--t);background-size:cover;background-position:center;background-repeat:no-repeat;"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,10,9,0.62) 0%,rgba(11,10,9,0.34) 45%,rgba(11,10,9,0.66) 100%);"></div>
+      <div style="position:absolute;inset:0;z-index:2;padding:84px clamp(28px,4vw,64px) 0;display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:clamp(18px,3vw,44px);flex-wrap:wrap;">
+          <div style="flex:1 1 420px;min-width:0;">
+            <div style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;">
+              <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:rgba(255,255,255,0.6);">{{ t.sec5 }}</span>
+              <h2 style="font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(28px,3.6vw,50px);letter-spacing:-0.02em;margin:0;">{{ t.c5h2 }}</h2>
+            </div>
+            <p style="font-family:'Manrope',sans-serif;font-weight:500;font-size:clamp(13px,1.15vw,16px);line-height:1.55;color:rgba(242,240,235,0.65);margin:12px 0 0;">
+              {{ t.c5sub }}
+            </p>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:auto;">
+          <div class="pstep">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span class="pstep-num">1</span>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5A2.5 2.5 0 016.5 4h11A2.5 2.5 0 0120 6.5v7a2.5 2.5 0 01-2.5 2.5H9l-5 4V6.5z"/></svg>
+            </div>
+            <div class="pstep-bar"><div class="pstep-fill" style="width:25%;"></div></div>
+            <div>
+              <h3 style="font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(14px,1.25vw,17px);letter-spacing:-0.02em;margin:0;">{{ t.s1t }}</h3>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.13em;color:#FF5A1F;margin-top:4px;">{{ t.s1l }}</div>
+            </div>
+            <p style="font-family:'Manrope',sans-serif;font-size:clamp(11px,0.95vw,13px);line-height:1.5;color:rgba(242,240,235,0.68);margin:0;flex:1 1 auto;">{{ t.s1a }}<span class="mk">{{ t.s1m }}</span>{{ t.s1c }}</p>
+          </div>
+          <div class="pstep">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span class="pstep-num">2</span>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+            </div>
+            <div class="pstep-bar"><div class="pstep-fill" style="width:50%;"></div></div>
+            <div>
+              <h3 style="font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(14px,1.25vw,17px);letter-spacing:-0.02em;margin:0;">{{ t.s2t }}</h3>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.13em;color:#FF5A1F;margin-top:4px;">{{ t.s2l }}</div>
+            </div>
+            <p style="font-family:'Manrope',sans-serif;font-size:clamp(11px,0.95vw,13px);line-height:1.5;color:rgba(242,240,235,0.68);margin:0;flex:1 1 auto;">{{ t.s2a }}<span class="mk">{{ t.s2m }}</span>{{ t.s2c }}</p>
+          </div>
+          <div class="pstep">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span class="pstep-num">3</span>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8.5 4.7-8.5 4.7-8.5-4.7L12 3z"/><path d="M4 13l8 4.4 8-4.4"/><path d="M4 17l8 4.4 8-4.4"/></svg>
+            </div>
+            <div class="pstep-bar"><div class="pstep-fill" style="width:75%;"></div></div>
+            <div>
+              <h3 style="font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(14px,1.25vw,17px);letter-spacing:-0.02em;margin:0;">{{ t.s3t }}</h3>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.13em;color:#FF5A1F;margin-top:4px;">{{ t.s3l }}</div>
+            </div>
+            <p style="font-family:'Manrope',sans-serif;font-size:clamp(11px,0.95vw,13px);line-height:1.5;color:rgba(242,240,235,0.68);margin:0;flex:1 1 auto;">{{ t.s3a }}<span class="mk">{{ t.s3m }}</span>{{ t.s3b }}</p>
+          </div>
+          <div class="pstep">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span class="pstep-num">4</span>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4"/><path d="M6 4h11l-2.5 3.5L17 11H6"/></svg>
+            </div>
+            <div class="pstep-bar"><div class="pstep-fill" style="width:100%;"></div></div>
+            <div>
+              <h3 style="font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(14px,1.25vw,17px);letter-spacing:-0.02em;margin:0;">{{ t.s4t }}</h3>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.13em;color:#FF5A1F;margin-top:4px;">{{ t.s4l }}</div>
+            </div>
+            <p style="font-family:'Manrope',sans-serif;font-size:clamp(11px,0.95vw,13px);line-height:1.5;color:rgba(242,240,235,0.68);margin:0;flex:1 1 auto;">{{ t.s4a }}<span class="mk">{{ t.s4m1 }}</span>{{ t.s4b }}<span class="mk">{{ t.s4m2 }}</span>{{ t.s4c }}</p>
+          </div>
+        </div>
+        <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px;">
+          <p style="font-family:'Manrope',sans-serif;font-size:clamp(11px,0.95vw,13px);line-height:1.5;color:rgba(242,240,235,0.6);margin:0;">{{ t.supA }}<span class="mk">{{ t.supM }}</span>{{ t.supC }}</p>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);">
+            <p style="font-family:'Manrope',sans-serif;font-weight:600;font-size:clamp(13px,1.15vw,16px);line-height:1.4;color:#F2F0EB;margin:0;">{{ t.cloA }}<span class="mk">{{ t.cloM }}</span>{{ t.cloC }}</p>
+            <button onClick="{{ goContact }}" style="display:inline-flex;align-items:center;gap:9px;background:#FF5A1F;color:#0B0A09;font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(13px,1.1vw,15px);border:none;padding:11px 22px;border-radius:999px;cursor:pointer;flex:0 0 auto;transition:transform .2s ease,box-shadow .2s ease;" style-hover="transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,90,31,0.45);">{{ t.btnD }} <span style="font-size:1.1em;">→</span></button>
+          </div>
+        </div>
+        <!-- Скидочная лента. Честный счётчик: при продаже места менять «3» руками (6 вхождений). -->
+        <div class="promo-tape" style="margin:14px calc(clamp(28px,4vw,64px) * -1) 0;">
+          <div class="promo-track">
+            <span class="promo-unit">{{ t.tape1 }}<i></i>{{ t.tape2 }}<i></i>{{ t.tape1 }}<i></i>{{ t.tape2 }}<i></i>{{ t.tape1 }}<i></i>{{ t.tape2 }}<i></i></span>
+            <span class="promo-unit" aria-hidden="true">{{ t.tape1 }}<i></i>{{ t.tape2 }}<i></i>{{ t.tape1 }}<i></i>{{ t.tape2 }}<i></i>{{ t.tape1 }}<i></i>{{ t.tape2 }}<i></i></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CARD 06 — КОНТАКТ (light) -->
+    <section data-card data-theme="light" data-screen-label="Contact" tabindex="0" style="position:relative;flex:0 0 auto;width:min(1360px,92vw);height:min(820px,86vh);border-radius:28px;overflow:hidden;border:1px solid rgba(11,10,9,0.12);box-shadow:0 40px 120px rgba(0,0,0,0.55);scroll-snap-align:center;background:#F2F0EB;">
+      <div class="card-tex tex-light" style="position:absolute;inset:0;background-color:#F2F0EB;background-image:var(--t);background-size:cover;background-position:center;background-repeat:no-repeat;"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(242,240,235,0.5) 0%,rgba(242,240,235,0.24) 45%,rgba(242,240,235,0.55) 100%);"></div>
+      <div style="position:absolute;inset:0;z-index:2;color:#0B0A09;padding:88px clamp(28px,4vw,64px) clamp(28px,4vw,52px);display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;color:rgba(11,10,9,0.55);">
+          <span>{{ t.sec6 }}</span><span>[город] · GMT+3</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:36px;">
+          <h2 style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(42px,8vw,120px);line-height:0.92;letter-spacing:-0.03em;margin:0;max-width:14ch;">{{ t.c6h2 }}</h2>
+          <a ref="{{ setCta }}" href="mailto:you@example.com" style="display:inline-flex;align-items:center;gap:14px;background:#FF5A1F;color:#0B0A09;font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(18px,1.8vw,24px);padding:20px 40px;border-radius:999px;white-space:nowrap;transition:transform .2s ease,box-shadow .2s ease;" style-hover="transform:translateY(-3px);box-shadow:0 16px 44px rgba(255,90,31,0.5);">{{ t.c6cta }} <span style="font-size:1.1em;">→</span></a>
+          <p style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.08em;color:rgba(11,10,9,0.55);margin:0;">{{ t.c6reply }}</p>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;">
+          <a href="mailto:you@example.com">you@example.com</a>
+          <span style="display:flex;gap:22px;"><a href="#">Telegram</a><a href="#">Dribbble</a><a href="#">GitHub</a></span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;accent&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#FF5A1F&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Свет&quot;},&quot;lightCurrent&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Свет&quot;}}">
+// ===== i18n: словарь RU / UA / EN. Счётчик мест («3») менять во всех трёх. =====
+const T = {
+  ru: {
+    nav0:"Интро", nav1:"Подход", nav2:"Услуги", nav3:"Работы", nav4:"Процесс", nav5:"Контакт",
+    sec2:"02 — ПОДХОД", sec3:"03 — УСЛУГИ", sec4:"04 — РАБОТЫ", sec5:"05 — ПРОЦЕСС", sec6:"06 — КОНТАКТ",
+    tagline:"ИИ-СИСТЕМЫ И АВТОМАТИЗАЦИЯ ДЛЯ БИЗНЕСА",
+    h1a:"Собираю ИИ-продукты целиком.", h1b:"Один.",
+    sub1:"От идеи до запуска: интерфейс, логика, ИИ, база, сервер.", sub2:"Три года в разработке, несколько систем работают в проде.",
+    btnD:"Обсудить задачу", btnTg:"Написать в Telegram",
+    sk1:"Интерфейс", sk2:"Логика", sk3:"ИИ", sk4:"База", sk5:"Сервер", listai:"ЛИСТАЙ",
+    pn:"ИМЯ", pr:"РОЛЬ", pl:"ЛОКАЦИЯ", pe:"ОПЫТ", pa:"ПОДХОД",
+    vr:"Соло-разработчик ИИ-систем", vl:"Украина, работаю со всем миром", ve:"3 года в ИИ", va:"Код и архитектуру пишу сам",
+    a1:"Один человек —", a2:"вся вертикаль", a3:"от первого экрана до продакшена.",
+    a4:"Без передачи между дизайнером и разработчиком. Идея не теряется по дороге — я держу её от макета до кода.",
+    c3h2:"Что я делаю",
+    c3sub:"Четыре направления. Цена — «от»: точную называю после короткого разговора, когда понятен объём. API-расходы считаю заранее и показываю до старта — обычно $5–30 в месяц.",
+    catchB:"Задача не из списка?", catchT:"Опишите её в двух фразах — отвечу, возьмусь ли, и назову цену.", priceLbl:"ЦЕНА",
+    services:[
+      { no:"01", title:"ИИ-ассистент, который отвечает клиентам за вас", text:"Знает ваши товары, цены и условия. Отвечает ночью и в выходные, не выдумывает — только по вашим данным. И не просто отвечает: оформляет заявку, бронь, передаёт менеджеру.", price:"от $500" },
+      { no:"02", title:"Телеграм мини-приложение", text:"Каталог, корзина и оплата прямо внутри Telegram. Без отдельного сайта и приложения в сторах.", price:"от $400" },
+      { no:"03", title:"Телеграм-бот с ИИ под задачу", text:"Приём и разбор заявок, консультации клиентов, передача в вашу таблицу или CRM. Под конкретный процесс, а не «универсальный».", price:"от $350" },
+      { no:"04", title:"Автоматизация обработки данных", text:"Заявки, анкеты, документы в свободном виде превращаются в структурированную базу с поиском. Сотни записей за часы, не за недели.", price:"от $200" }
+    ],
+    c4h2:"Что я построил",
+    c4sub:"Это мои продукты, не клиентские заказы — говорю как есть. Зато их можно открыть и потрогать прямо сейчас: лучший способ проверить, как я делаю, до того как платить.",
+    w1meta:"МОЙ ПРОДУКТ · В РАБОТЕ", w1chip:"доказывает направление «ИИ-ассистент»",
+    w1d:"Рабочая среда, где ИИ видит все проекты и задачи человека — и не советует, а делает: сам создаёт задачи, собирает план дня, напоминает о том, что вы упустили.",
+    w1s:"ИИ здесь меняет данные в системе, а не пишет тексты. Ровно это я ставлю бизнесу — только на ваших процессах.", w1btn:"Открыть Pulsone",
+    w2meta:"МОЙ ПРОДУКТ · ЖИВОЙ БОТ", w2chip:"доказывает направления «мини-приложение» и «бот»",
+    w2d:"Маркетплейс внутри Telegram: каталог, карточки, приём оплаты — всё без сайта и без приложения в сторах.",
+    w2s:"Коммерция и платежи внутри мессенджера, где уже сидят ваши клиенты.", w2btn:"Открыть бота",
+    w3t:"850 анкет → база с поиском", w3meta:"МОЙ ПРОЕКТ", w3chip:"доказывает направление «обработка данных»",
+    w3d:"850 анкет, написанных свободным текстом, превращены в базу: навыки, опыт, город, контакты — с поиском по любому полю. Вручную это недели. Здесь — часы.",
+    w3s:"Для тех, кто любит цифры: обработка одной записи обошлась примерно в один цент. Себестоимость считаю до старта.",
+    hidden:"ДАННЫЕ СКРЫТЫ",
+    stackLine:"PYTHON · TELEGRAM API · OPENROUTER И CLAUDE API · БАЗЫ ДАННЫХ · ПЛАТЁЖНЫЕ СИСТЕМЫ · ДЕПЛОЙ И ПОДДЕРЖКА",
+    c5h2:"Как проходит работа", c5sub:"Четыре шага. На каждом видно, что происходит и за что вы платите.",
+    s1t:"Разговор", s1l:"БЕСПЛАТНО · 15–20 МИНУТ",
+    s1a:"Рассказываете, как устроен процесс сейчас и что отнимает время. Я говорю честно: где ИИ окупится, а где он вам не нужен — такое тоже бывает, и ", s1m:"тогда я так и скажу", s1c:".",
+    s2t:"План и цена", s2l:"ФИКСИРОВАННЫЕ",
+    s2a:"Через 1–2 дня присылаю короткий план: что делаем, по каким этапам, сколько стоит и сколько система будет есть в месяц после запуска. Цена фиксируется до старта и ", s2m:"не растёт по ходу", s2c:".",
+    s3t:"Работа по этапам", s3l:"ПЛАТИТЕ ЧАСТЯМИ",
+    s3a:"Проект разбит на этапы, ", s3m:"оплата — за принятый этап", s3b:", а не всё вперёд. Первую работающую версию показываю рано — обычно в течение первой недели, дальше докручиваем на живом примере.",
+    s4t:"Запуск и передача", s4l:"ВСЁ ВАШЕ",
+    s4a:"Система разворачивается у вас: код, доступы, база — ", s4m1:"в вашей собственности", s4b:", а не у меня «в аренде». Отдаю простую инструкцию и показываю, как пользоваться. Две недели после запуска ", s4m2:"правлю бесплатно", s4c:" всё, что всплывёт.",
+    supA:"Дальше по желанию: поддержка и доработки — $50/мес, либо разовые правки по запросу. ", supM:"Без обязательной подписки", supC:".",
+    cloA:"Вы работаете ", cloM:"напрямую с тем, кто пишет код", cloC:". Без менеджеров, без пересказов, без наценки агентства.",
+    tape1:"ПЕРВЫМ ТРЁМ ЗАКАЗЧИКАМ — МИНУС 50% ЗА ОТЗЫВ", tape2:"ОСТАЛОСЬ МЕСТ: 3",
+    c6h2:"Обсудим ваш проект?", c6cta:"Обсудить проект", c6reply:"Отвечаю в течение дня"
+  },
+  ua: {
+    nav0:"Інтро", nav1:"Підхід", nav2:"Послуги", nav3:"Роботи", nav4:"Процес", nav5:"Контакт",
+    sec2:"02 — ПІДХІД", sec3:"03 — ПОСЛУГИ", sec4:"04 — РОБОТИ", sec5:"05 — ПРОЦЕС", sec6:"06 — КОНТАКТ",
+    tagline:"ШІ-СИСТЕМИ ТА АВТОМАТИЗАЦІЯ ДЛЯ БІЗНЕСУ",
+    h1a:"Збираю ШІ-продукти цілком.", h1b:"Сам.",
+    sub1:"Від ідеї до запуску: інтерфейс, логіка, ШІ, база, сервер.", sub2:"Три роки в розробці, кілька систем працюють у проді.",
+    btnD:"Обговорити задачу", btnTg:"Написати в Telegram",
+    sk1:"Інтерфейс", sk2:"Логіка", sk3:"ШІ", sk4:"База", sk5:"Сервер", listai:"ГОРТАЙ",
+    pn:"ІМ'Я", pr:"РОЛЬ", pl:"ЛОКАЦІЯ", pe:"ДОСВІД", pa:"ПІДХІД",
+    vr:"Соло-розробник ШІ-систем", vl:"Україна, працюю з усім світом", ve:"3 роки в ШІ", va:"Код і архітектуру пишу сам",
+    a1:"Одна людина —", a2:"вся вертикаль", a3:"від першого екрана до продакшену.",
+    a4:"Без передачі між дизайнером і розробником. Ідея не губиться дорогою — я тримаю її від макета до коду.",
+    c3h2:"Що я роблю",
+    c3sub:"Чотири напрями. Ціна — «від»: точну називаю після короткої розмови, коли зрозумілий обсяг. API-витрати рахую заздалегідь і показую до старту — зазвичай $5–30 на місяць.",
+    catchB:"Задача не зі списку?", catchT:"Опишіть її у двох фразах — відповім, чи візьмуся, і назву ціну.", priceLbl:"ЦІНА",
+    services:[
+      { no:"01", title:"ШІ-асистент, який відповідає клієнтам за вас", text:"Знає ваші товари, ціни та умови. Відповідає вночі та у вихідні, не вигадує — лише за вашими даними. І не просто відповідає: оформлює заявку, бронь, передає менеджеру.", price:"від $500" },
+      { no:"02", title:"Telegram міні-застосунок", text:"Каталог, кошик і оплата прямо всередині Telegram. Без окремого сайту та застосунку в сторах.", price:"від $400" },
+      { no:"03", title:"Telegram-бот зі ШІ під задачу", text:"Приймання і розбір заявок, консультації клієнтів, передача у вашу таблицю або CRM. Під конкретний процес, а не «універсальний».", price:"від $350" },
+      { no:"04", title:"Автоматизація обробки даних", text:"Заявки, анкети, документи у вільній формі перетворюються на структуровану базу з пошуком. Сотні записів за години, а не тижні.", price:"від $200" }
+    ],
+    c4h2:"Що я побудував",
+    c4sub:"Це мої продукти, не клієнтські замовлення — кажу як є. Зате їх можна відкрити й помацати просто зараз: найкращий спосіб перевірити, як я роблю, до того як платити.",
+    w1meta:"МІЙ ПРОДУКТ · В РОБОТІ", w1chip:"доводить напрям «ШІ-асистент»",
+    w1d:"Робоче середовище, де ШІ бачить усі проєкти й задачі людини — і не радить, а робить: сам створює задачі, збирає план дня, нагадує про те, що ви упустили.",
+    w1s:"ШІ тут змінює дані в системі, а не пише тексти. Саме це я ставлю бізнесу — тільки на ваших процесах.", w1btn:"Відкрити Pulsone",
+    w2meta:"МІЙ ПРОДУКТ · ЖИВИЙ БОТ", w2chip:"доводить напрями «міні-застосунок» і «бот»",
+    w2d:"Маркетплейс усередині Telegram: каталог, картки, приймання оплати — все без сайту й без застосунку в сторах.",
+    w2s:"Комерція та платежі всередині месенджера, де вже сидять ваші клієнти.", w2btn:"Відкрити бота",
+    w3t:"850 анкет → база з пошуком", w3meta:"МІЙ ПРОЄКТ", w3chip:"доводить напрям «обробка даних»",
+    w3d:"850 анкет, написаних вільним текстом, перетворено на базу: навички, досвід, місто, контакти — з пошуком за будь-яким полем. Вручну це тижні. Тут — години.",
+    w3s:"Для тих, хто любить цифри: обробка одного запису коштувала приблизно один цент. Собівартість рахую до старту.",
+    hidden:"ДАНІ ПРИХОВАНІ",
+    stackLine:"PYTHON · TELEGRAM API · OPENROUTER І CLAUDE API · БАЗИ ДАНИХ · ПЛАТІЖНІ СИСТЕМИ · ДЕПЛОЙ І ПІДТРИМКА",
+    c5h2:"Як проходить робота", c5sub:"Чотири кроки. На кожному видно, що відбувається і за що ви платите.",
+    s1t:"Розмова", s1l:"БЕЗКОШТОВНО · 15–20 ХВИЛИН",
+    s1a:"Розповідаєте, як влаштований процес зараз і що забирає час. Я кажу чесно: де ШІ окупиться, а де він вам не потрібен — таке теж буває, і ", s1m:"тоді я так і скажу", s1c:".",
+    s2t:"План і ціна", s2l:"ФІКСОВАНІ",
+    s2a:"За 1–2 дні надсилаю короткий план: що робимо, за якими етапами, скільки коштує і скільки система їстиме на місяць після запуску. Ціна фіксується до старту і ", s2m:"не росте по ходу", s2c:".",
+    s3t:"Робота за етапами", s3l:"ПЛАТИТЕ ЧАСТИНАМИ",
+    s3a:"Проєкт розбито на етапи, ", s3m:"оплата — за прийнятий етап", s3b:", а не все наперед. Першу робочу версію показую рано — зазвичай протягом першого тижня, далі докручуємо на живому прикладі.",
+    s4t:"Запуск і передача", s4l:"ВСЕ ВАШЕ",
+    s4a:"Система розгортається у вас: код, доступи, база — ", s4m1:"у вашій власності", s4b:", а не в мене «в оренді». Віддаю просту інструкцію і показую, як користуватися. Два тижні після запуску ", s4m2:"правлю безкоштовно", s4c:" все, що спливе.",
+    supA:"Далі за бажанням: підтримка й доопрацювання — $50/міс, або разові правки за запитом. ", supM:"Без обов'язкової підписки", supC:".",
+    cloA:"Ви працюєте ", cloM:"безпосередньо з тим, хто пише код", cloC:". Без менеджерів, без переказів, без націнки агенції.",
+    tape1:"ПЕРШИМ ТРЬОМ ЗАМОВНИКАМ — МІНУС 50% ЗА ВІДГУК", tape2:"ЛИШИЛОСЬ МІСЦЬ: 3",
+    c6h2:"Обговоримо ваш проєкт?", c6cta:"Обговорити проєкт", c6reply:"Відповідаю протягом дня"
+  },
+  en: {
+    nav0:"Intro", nav1:"Approach", nav2:"Services", nav3:"Works", nav4:"Process", nav5:"Contact",
+    sec2:"02 — APPROACH", sec3:"03 — SERVICES", sec4:"04 — WORKS", sec5:"05 — PROCESS", sec6:"06 — CONTACT",
+    tagline:"AI SYSTEMS & BUSINESS AUTOMATION",
+    h1a:"I build AI products end-to-end.", h1b:"Solo.",
+    sub1:"From idea to launch: interface, logic, AI, database, server.", sub2:"Three years in development, several systems running in production.",
+    btnD:"Discuss your project", btnTg:"Message on Telegram",
+    sk1:"Interface", sk2:"Logic", sk3:"AI", sk4:"Database", sk5:"Server", listai:"SCROLL",
+    pn:"NAME", pr:"ROLE", pl:"LOCATION", pe:"EXPERIENCE", pa:"APPROACH",
+    vr:"Solo AI systems developer", vl:"Ukraine, working worldwide", ve:"3 years in AI", va:"I write the code and architecture myself",
+    a1:"One person —", a2:"the whole vertical", a3:"from the first screen to production.",
+    a4:"No handoffs between designer and developer. The idea doesn't get lost along the way — I carry it from mockup to code.",
+    c3h2:"What I do",
+    c3sub:"Four services. Prices are «from»: I give the exact number after a short call, once the scope is clear. API costs are calculated upfront and shown before we start — usually $5–30 a month.",
+    catchB:"Task not on the list?", catchT:"Describe it in two sentences — I'll tell you if I can take it and quote a price.", priceLbl:"PRICE",
+    services:[
+      { no:"01", title:"An AI assistant that answers your customers for you", text:"Knows your products, prices and terms. Replies at night and on weekends, never makes things up — only your data. And it doesn't just reply: it creates orders, bookings, and hands over to a manager.", price:"from $500" },
+      { no:"02", title:"Telegram mini app", text:"Catalog, cart and payments right inside Telegram. No separate website, no app stores.", price:"from $400" },
+      { no:"03", title:"Custom AI Telegram bot", text:"Takes and processes requests, consults customers, pushes data to your spreadsheet or CRM. Built for your specific process, not a «one-size-fits-all».", price:"from $350" },
+      { no:"04", title:"Data processing automation", text:"Free-form requests, forms and documents become a structured, searchable database. Hundreds of records in hours, not weeks.", price:"from $200" }
+    ],
+    c4h2:"What I've built",
+    c4sub:"These are my own products, not client work — I'm upfront about that. But you can open and try them right now: the best way to check how I build before paying.",
+    w1meta:"MY PRODUCT · IN PROGRESS", w1chip:"proves the «AI assistant» service",
+    w1d:"A workspace where AI sees all your projects and tasks — and doesn't advise, it acts: creates tasks itself, builds your daily plan, reminds you of what you've missed.",
+    w1s:"Here AI changes data in the system, not just writes text. That's exactly what I deploy for business — on your processes.", w1btn:"Open Pulsone",
+    w2meta:"MY PRODUCT · LIVE BOT", w2chip:"proves the «mini app» and «bot» services",
+    w2d:"A marketplace inside Telegram: catalog, product cards, payments — no website, no app stores.",
+    w2s:"Commerce and payments inside the messenger your customers already use.", w2btn:"Open the bot",
+    w3t:"850 forms → searchable database", w3meta:"MY PROJECT", w3chip:"proves the «data processing» service",
+    w3d:"850 free-text forms turned into a database: skills, experience, city, contacts — searchable by any field. Manually it's weeks. Here — hours.",
+    w3s:"For the numbers people: processing one record cost about one cent. I calculate running costs before we start.",
+    hidden:"DATA HIDDEN",
+    stackLine:"PYTHON · TELEGRAM API · OPENROUTER & CLAUDE API · DATABASES · PAYMENT SYSTEMS · DEPLOYMENT & SUPPORT",
+    c5h2:"How we work", c5sub:"Four steps. At each one you can see what's happening and what you're paying for.",
+    s1t:"The talk", s1l:"FREE · 15–20 MINUTES",
+    s1a:"You tell me how your process works now and what eats your time. I'm honest about where AI will pay off and where you don't need it — that happens too, and ", s1m:"I'll say so straight", s1c:".",
+    s2t:"Plan & price", s2l:"FIXED",
+    s2a:"Within 1–2 days you get a short plan: what we build, in what stages, what it costs and what the system will consume monthly after launch. The price is fixed before we start and ", s2m:"never grows midway", s2c:".",
+    s3t:"Work in stages", s3l:"PAY IN PARTS",
+    s3a:"The project is split into stages, ", s3m:"you pay per accepted stage", s3b:", not everything upfront. You see the first working version early — usually within the first week, then we refine it on a live example.",
+    s4t:"Launch & handover", s4l:"ALL YOURS",
+    s4a:"The system is deployed on your side: code, access, database — ", s4m1:"your property", s4b:", not «rented» from me. You get a simple guide and a walkthrough. For two weeks after launch ", s4m2:"I fix everything for free", s4c:" — anything that pops up.",
+    supA:"Optional afterwards: support and improvements — $50/mo, or one-off fixes on request. ", supM:"No mandatory subscription", supC:".",
+    cloA:"You work ", cloM:"directly with the person who writes the code", cloC:". No managers, no retelling, no agency markup.",
+    tape1:"FIRST THREE CLIENTS — 50% OFF FOR A REVIEW", tape2:"SPOTS LEFT: 3",
+    c6h2:"Let's discuss your project?", c6cta:"Discuss the project", c6reply:"I reply within a day"
+  }
+};
+
+class Component extends DCLogic {
+  state = { active: 0, open: false, now: '', lang: 'ru' };
+
+  clamp(v,a,b){ return v<a?a:v>b?b:v; }
+
+  renderVals(){
+    const accent = this.props.accent ?? '#FF5A1F';
+    this.accent = accent;
+    const active = this.state.active;
+    const open = this.state.open;
+    const lang = this.state.lang || 'ru';
+    const t = T[lang] || T.ru;
+    const langs = [['UA','ua'],['RU','ru'],['EN','en']].map(([code,key])=>({
+      code, go: ()=>this.setState({ lang: key }),
+      bg: lang===key ? accent : 'transparent',
+      fg: lang===key ? '#0B0A09' : 'rgba(242,240,235,0.62)',
+    }));
+    const labels = [['01','Интро'],['02','Подход'],['03','Услуги'],['04','Работы'],['05','Процесс'],['06','Контакт']];
+    const dots = labels.map((l,i)=>({
+      aria: l[1],
+      barBg: i===active ? accent : 'rgba(242,240,235,0.24)',
+      barH: i===active ? '16px' : '8px',
+      barGlow: i===active ? '0 0 8px '+accent : 'none',
+      go: ()=>this.goScene(i),
+    }));
+    // Табы топбара: активный раскрывается с подсветкой; «Процесс» (i=4) показывает
+    // подпись ВСЕГДА (указатель для клиента), но без подсветки, когда не активен.
+    const nav = labels.map((l,i)=>({
+      go: ()=>this.goScene(i),
+      bg: i===active ? 'rgba(255,255,255,0.1)' : 'transparent',
+      fg: i===active ? accent : 'rgba(242,240,235,0.55)',
+      mw: (i===active || i===4) ? '110px' : '0px',
+      op: (i===active || i===4) ? '1' : '0',
+      ml: (i===active || i===4) ? '8px' : '0px',
+    }));
+    const scenes = labels.map((l,i)=>({
+      n:l[0], label:l[1],
+      bg: i===active ? 'rgba(255,90,31,0.12)' : 'transparent',
+      edge: i===active ? accent : 'transparent',
+      fg: i===active ? '#F2F0EB' : 'rgba(242,240,235,0.72)',
+      numColor: i===active ? accent : 'rgba(242,240,235,0.4)',
+      dot: i===active ? accent : 'rgba(242,240,235,0.2)',
+      dotGlow: i===active ? '0 0 8px '+accent : 'none',
+      go: ()=>this.goScene(i),
+    }));
+    // Порядок не случайный: якорение цены (Ariely) — дорогой оффер первым. Тексты в T.
+    const works = t.services;
+    const stack = [
+      { no:'A', name:'Design', items:'Figma · дизайн-системы · прототипы', span:3, led:accent, ledGlow:'0 0 12px '+accent },
+      { no:'B', name:'Frontend', items:'React · TypeScript · анимация', span:3, led:'rgba(11,10,9,0.25)', ledGlow:'none' },
+      { no:'C', name:'Backend', items:'Node · API · базы данных', span:2, led:'rgba(11,10,9,0.25)', ledGlow:'none' },
+      { no:'D', name:'Motion', items:'интеракции · микроанимация · 3D', span:4, led:'rgba(11,10,9,0.25)', ledGlow:'none' },
+    ];
+    const steps = [
+      { no:'01', name:'Бриф', desc:'Разбираем задачу бизнеса, а не список экранов.' },
+      { no:'02', name:'Прототип', desc:'Кликабельный макет — проверяем идею до кода.' },
+      { no:'03', name:'Разработка', desc:'Фронт и бэк одними руками, без потерь на стыках.' },
+      { no:'04', name:'Релиз', desc:'Выкатываем, замеряем, доводим по данным.' },
+    ];
+    return {
+      accent, now: this.state.now,
+      activeN: labels[active][0], activeLabel: labels[active][1], scenes, dots, lang, langs, t,
+      n0:nav[0], n1:nav[1], n2:nav[2], n3:nav[3], n4:nav[4], n5:nav[5],
+      menuMax: open ? '320px' : '0px', menuOpacity: open ? 1 : 0, caretRot: open ? 'rotate(180deg)' : 'rotate(0deg)',
+      works, stack, steps,
+      setIslandWrap:(el)=>{this.islandWrap=el;},
+      openIsland:()=>this.setState({open:true}),
+      closeIsland:()=>this.setState({open:false}),
+      toggleIsland:()=>this.setState(s=>({open:!s.open})),
+      setRoot:(el)=>{this.root=el;}, setBgVideo:(el)=>{this.bgVideo=el;},
+      setTrack:(el)=>{this.track=el;}, setProgress:(el)=>{this.progress=el;},
+      setCta:(el)=>{this.cta=el;}, setLogo:(el)=>{this.logo=el;}, setThread:(el)=>{this.thread=el;},
+      goContact:()=>this.goScene(5),
+      goPrices:()=>this.goScene(2),
+      goNext:()=>this.goScene(Math.min(5,(this.state.active||0)+1)),
+    };
+  }
+
+  goScene(i){
+    if(!this.cards||!this.track) return;
+    const card = this.cards[i]; if(!card) return;
+    const left = card.offsetLeft - (this.track.clientWidth - card.clientWidth)/2;
+    this.animateScroll(left);
+    this.setState({ open:false });
+  }
+
+  // Кастомный плавный скролл: быстрый старт, мягкое приземление (easeOutQuart).
+  animateScroll(target, duration){
+    const track = this.track; if(!track) return;
+    const max = track.scrollWidth - track.clientWidth;
+    target = this.clamp(target, 0, max);
+    if(this.reduced){ track.scrollLeft = target; return; }
+    cancelAnimationFrame(this.scrollRaf);
+    const start = track.scrollLeft;
+    const dist = target - start;
+    if(Math.abs(dist) < 1){ track.scrollLeft = target; return; }
+    const dur = duration || 520;
+    const t0 = performance.now();
+    const step = (now)=>{
+      let t = (now - t0)/dur; if(t>1) t=1;
+      const e = 1 - Math.pow(1 - t, 4); // easeOutQuart
+      track.scrollLeft = start + dist*e;
+      if(t<1){ this.scrollRaf = requestAnimationFrame(step); }
+    };
+    this.scrollRaf = requestAnimationFrame(step);
+  }
+
+  componentDidMount(){
+    if(this.cta) this.cta.style.background = this.accent;
+    this.reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const tick = ()=>{ const d=new Date(); this.setState({ now: d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}) }); };
+    tick(); this.clock = setInterval(tick, 1000);
+
+    this.mouse = { x:-9999, y:-9999 };
+    this.lastMove = -9999;
+    this.b = { x:-9999, y:-9999, a:0 };
+    this.bt = { x:-9999, y:-9999, a:0 };
+    this.t0 = performance.now();
+
+    this.onResize = ()=>this.resize();
+    this.onMove = (e)=>{ this.mouse={x:e.clientX,y:e.clientY}; this.lastMove=performance.now(); };
+    this.onTouch = (e)=>{ if(e.touches&&e.touches[0]){ this.mouse={x:e.touches[0].clientX,y:e.touches[0].clientY}; this.lastMove=performance.now(); } };
+    this.onWheel = (e)=>{
+      const track = (this.track && this.track.isConnected) ? this.track : document.querySelector('.hscroll'); if(!track) return;
+      if(Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return; // let horizontal trackpad pass
+      const max = track.scrollWidth - track.clientWidth;
+      const atStart = track.scrollLeft <= 1, atEnd = track.scrollLeft >= max - 1;
+      const g = window.__deckWheel || (window.__deckWheel = { acc:0, lock:0 });
+      if((atStart && e.deltaY < 0) || (atEnd && e.deltaY > 0)){ g.acc = 0; return; } // release pin at edges
+      e.preventDefault();
+      const now = performance.now();
+      if(now - g.lock < 360) return; // one step per gesture (shared across instances)
+      if((g.acc > 0) !== (e.deltaY > 0)) g.acc = 0;
+      g.acc += e.deltaY;
+      if(Math.abs(g.acc) < 40) return;
+      const dir = g.acc > 0 ? 1 : -1; g.acc = 0; g.lock = now;
+      const cards = [...track.querySelectorAll('[data-card]')];
+      const center = track.scrollLeft + track.clientWidth/2;
+      let cur = 0, bd = 1e9;
+      cards.forEach((c,i)=>{ const cc = c.offsetLeft + c.clientWidth/2; const d = Math.abs(cc-center); if(d<bd){ bd=d; cur=i; } });
+      const ti = Math.max(0, Math.min(cards.length-1, cur + dir));
+      const left = cards[ti].offsetLeft - (track.clientWidth - cards[ti].clientWidth)/2;
+      this.animateScroll(left);
+    };
+    this.onKey = (e)=>{
+      if(e.key==='ArrowRight'){ this.goScene(Math.min(5,this.state.active+1)); e.preventDefault(); }
+      else if(e.key==='ArrowLeft'){ this.goScene(Math.max(0,this.state.active-1)); e.preventDefault(); }
+    };
+    this.onFocusIn = (e)=>{
+      const c = e.target && e.target.closest ? e.target.closest('[data-card]') : null;
+      if(c && this.cards){ const i=this.cards.indexOf(c); if(i>=0){ const left=c.offsetLeft-(this.track.clientWidth-c.clientWidth)/2; this.animateScroll(left); } }
+    };
+    window.addEventListener('resize', this.onResize);
+    window.addEventListener('mousemove', this.onMove, {passive:true});
+    window.addEventListener('touchstart', this.onTouch, {passive:true});
+    window.addEventListener('touchmove', this.onTouch, {passive:true});
+    window.addEventListener('keydown', this.onKey);
+
+    this.resize();
+    const setup = ()=>{
+      if(!this.track){ setTimeout(setup, 40); return; }
+      this.cards = [...this.track.querySelectorAll('[data-card]')];
+      this.resize();
+      window.addEventListener('wheel', this.onWheel, {passive:false});
+      this.track.addEventListener('focusin', this.onFocusIn);
+      this.updateScroll();
+    };
+    setup();
+    this.initBg();
+    this.draw();
+    this.initLogo();
+    this.initGalleries();
+  }
+
+  // Мини-коллажи в слотах проектов: автосмена + клик = следующий кадр + точки.
+  initGalleries(){
+    const boot = ()=>{
+      const slots = [...document.querySelectorAll('[data-gallery]')];
+      if(!slots.length){ setTimeout(boot, 120); return; }
+      slots.forEach((slot, si)=>{
+        if(slot._g) return; slot._g = true;
+        const imgs = slot.getAttribute('data-gallery').split('|');
+        const layers = imgs.map((src,i)=>{
+          const d = document.createElement('div');
+          d.style.cssText = 'position:absolute;inset:0;background:center/cover no-repeat;transition:opacity .45s ease;opacity:'+(i===0?1:0)+';';
+          d.style.backgroundImage = "url('"+src+"')";
+          slot.appendChild(d); return d;
+        });
+        const dotsWrap = document.createElement('div');
+        dotsWrap.style.cssText = 'position:absolute;right:8px;bottom:6px;display:flex;gap:5px;z-index:2;';
+        let cur = 0, timer = null;
+        const show = (i)=>{
+          cur = (i + imgs.length) % imgs.length;
+          layers.forEach((l,j)=>l.style.opacity = j===cur ? 1 : 0);
+          dots.forEach((d,j)=>d.style.background = j===cur ? '#FF5A1F' : 'rgba(11,10,9,0.35)');
+        };
+        const reset = ()=>{ if(timer) clearInterval(timer); timer = setInterval(()=>show(cur+1), 3800 + si*600); };
+        const dots = imgs.map((_,i)=>{
+          const b = document.createElement('button');
+          b.setAttribute('aria-label','Скриншот '+(i+1));
+          b.style.cssText = 'width:6px;height:6px;border-radius:50%;border:none;padding:0;cursor:pointer;background:'+(i===0?'#FF5A1F':'rgba(11,10,9,0.35)')+';transition:background .2s ease;';
+          b.addEventListener('click',(e)=>{ e.stopPropagation(); show(i); reset(); });
+          dotsWrap.appendChild(b); return b;
+        });
+        slot.appendChild(dotsWrap);
+        slot.addEventListener('click', ()=>{ show(cur+1); reset(); });
+        slot.addEventListener('mouseenter', ()=>{ if(timer){ clearInterval(timer); timer=null; } });
+        slot.addEventListener('mouseleave', reset);
+        reset();
+      });
+    };
+    boot();
+  }
+
+  // Фоновое видео: автоплей + бесшовный ручной луп (не полагаемся на loop-атрибут).
+  initBg(){
+    const v = this.bgVideo; if(!v) return;
+    const tryPlay = ()=>{ try{ const p = v.play(); if(p&&p.catch) p.catch(()=>{}); }catch(e){} };
+    tryPlay();
+    ['pointerdown','keydown','wheel','touchstart'].forEach(ev=>window.addEventListener(ev, tryPlay, {once:true, passive:true}));
+    // Перепрыгиваем к началу ЧУТЬ раньше конца — до стоп-кадра, без рывка на стыке.
+    let looping = false;
+    const HEAD = 0.05, TAIL = 0.35;
+    v.addEventListener('timeupdate', ()=>{
+      if(!v.duration || looping) return;
+      if(v.currentTime >= v.duration - TAIL){
+        looping = true;
+        v.currentTime = HEAD;
+        const done = ()=>{ looping = false; v.removeEventListener('seeked', done); };
+        v.addEventListener('seeked', done);
+        tryPlay();
+      }
+    });
+    v.addEventListener('ended', ()=>{ v.currentTime = HEAD; tryPlay(); });  // страховка
+  }
+
+  // Кинетический вордмарк: intro-влёт эхо-контура + tap-glitch на мобилке.
+  initLogo(){
+    const lk = this.logo; if(!lk) return;
+    const EASE='cubic-bezier(.2,.8,.2,1)';
+    lk.addEventListener('touchstart',()=>{ if(this.reduced) return; lk.classList.add('is-tap'); setTimeout(()=>lk.classList.remove('is-tap'),260); },{passive:true});
+    if(this.reduced) return;
+    const run=()=>{
+      lk.querySelectorAll('.lk-solid,.lk-solid-tag,.lk-o-ring,.lk-o-bar').forEach((el,i)=>el.animate([{opacity:0,transform:'translateY(9px)'},{opacity:1,transform:'none'}],{duration:400,delay:i*40,easing:EASE,fill:'backwards'}));
+      lk.querySelectorAll('.lk-echo').forEach(el=>el.animate([{opacity:0,transform:'translate(28px,24px) skewX(-14deg)'},{opacity:1,transform:'translate(9px,6px) skewX(-7deg)'}],{duration:450,delay:150,easing:EASE,fill:'backwards'}));
+      lk.querySelectorAll('.lk-echo-tag').forEach(el=>el.animate([{opacity:0,transform:'translate(15px,13px) skewX(-12deg)'},{opacity:1,transform:'translate(4px,3px) skewX(-6deg)'}],{duration:450,delay:210,easing:EASE,fill:'backwards'}));
+    };
+    if(document.fonts&&document.fonts.ready){ document.fonts.ready.then(run); } else { run(); }
+  }
+
+  componentWillUnmount(){
+    clearInterval(this.clock);
+    cancelAnimationFrame(this.raf);
+    cancelAnimationFrame(this.scrollRaf);
+    window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('mousemove', this.onMove);
+    window.removeEventListener('touchstart', this.onTouch);
+    window.removeEventListener('touchmove', this.onTouch);
+    window.removeEventListener('keydown', this.onKey);
+    window.removeEventListener('wheel', this.onWheel);
+    if(this.track){ this.track.removeEventListener('focusin', this.onFocusIn); }
+  }
+
+  resize(){
+    this.mobile = window.innerWidth < 720;
+    this.W = window.innerWidth; this.H = window.innerHeight;
+    if(this.track && this.cards && this.cards[0]){
+      const cw = this.cards[0].clientWidth;
+      const pad = Math.max(14, (this.track.clientWidth - cw)/2);
+      this.track.style.paddingLeft = pad+'px';
+      this.track.style.paddingRight = pad+'px';
+      if(this.islandWrap){ const ct = this.cards[0].getBoundingClientRect().top; this.islandWrap.style.top = Math.max(12, Math.round(ct+14))+'px'; }
+      if(this.thread){ this.thread.style.width = this.track.scrollWidth+'px'; }
+    }
+  }
+
+  updateScroll(){
+    const track = (this.track && this.track.isConnected) ? this.track : document.querySelector('.hscroll');
+    if(!track) return;
+    this.track = track;
+    const cards = (this.cards && this.cards[0] && this.cards[0].isConnected) ? this.cards : [...track.querySelectorAll('[data-card]')];
+    this.cards = cards;
+    if(!cards.length) return;
+    const total = track.scrollWidth - track.clientWidth;
+    const prog = total>0 ? track.scrollLeft/total : 0;
+    if(this.progress) this.progress.style.width = (prog*100)+'%';
+    if(this.thread && Math.abs((parseFloat(this.thread.style.width)||0) - track.scrollWidth) > 2){ this.thread.style.width = track.scrollWidth+'px'; }
+    const center = track.scrollLeft + track.clientWidth/2;
+    let best=0, bd=1e9;
+    cards.forEach((c,i)=>{ const cc=c.offsetLeft+c.clientWidth/2; const d=Math.abs(cc-center); if(d<bd){bd=d;best=i;} });
+    if(best!==this.state.active) this.setState({ active:best });
+  }
+
+  draw = () => {
+    this.raf = requestAnimationFrame(this.draw);
+    this.updateScroll();
+    // Эффект глубины: центральная карточка в фокусе, соседние — меньше и притухают.
+    if(!this.reduced && this.cards && this.cards.length && this.track){
+      const center = this.track.scrollLeft + this.track.clientWidth/2;
+      const cw = this.cards[0].clientWidth || 1;
+      for(const c of this.cards){
+        const cc = c.offsetLeft + c.clientWidth/2;
+        const d = Math.min(1, Math.abs(cc-center)/cw);
+        c.style.transform = 'scale('+(1 - d*0.055).toFixed(4)+')';
+        c.style.opacity = (1 - d*0.42).toFixed(3);
+      }
+    }
+    this.b.x += (this.mouse.x-this.b.x)*0.22;
+    this.b.y += (this.mouse.y-this.b.y)*0.22;
+  }
+}
+</script>
+</body>
+</html>

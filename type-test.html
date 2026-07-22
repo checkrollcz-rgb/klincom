@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Подбор шрифта · KlinCom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700;800&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Onest:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Golos+Text:wght@400;500;700;900&family=Oswald:wght@400;600;700&family=Space+Grotesk:wght@400;500;700&family=Martian+Mono:wght@400;600&family=Exo+2:wght@600;700;800&family=Rubik:wght@600;700;800&family=Saira:wght@600;700;800&family=Comfortaa:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;background:#0B0A09;color:#F2F0EB;-webkit-font-smoothing:antialiased;}
+  body{font-family:'Manrope',sans-serif;}
+  .head{position:sticky;top:0;z-index:5;background:rgba(11,10,9,0.9);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.1);padding:18px 32px;}
+  .head h1{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;margin:0;font-weight:700;}
+  .head p{font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A8680;margin:6px 0 0;letter-spacing:0.04em;}
+  .wrap{max-width:1100px;margin:0 auto;padding:32px;}
+
+  .card{border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:40px 44px;margin-bottom:28px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);}
+  .card .meta{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.1em;color:#FF5A1F;font-weight:700;text-transform:uppercase;}
+  .name{font-family:'JetBrains Mono',monospace;font-size:13px;color:#F2F0EB;}
+  .desc{font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A8680;letter-spacing:0.02em;}
+
+  .label{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;opacity:0.55;margin-bottom:10px;}
+  .hero{font-weight:800;font-size:clamp(56px,9vw,120px);line-height:0.86;letter-spacing:-0.03em;margin:0 0 6px;}
+  .subhead{font-weight:700;font-size:clamp(26px,3.6vw,44px);line-height:1.05;letter-spacing:-0.02em;margin:26px 0 0;}
+  .subhead .ac{color:#FF5A1F;}
+  .body{font-size:17px;line-height:1.55;max-width:52ch;margin:22px 0 0;opacity:0.82;}
+  .row{display:flex;gap:26px;flex-wrap:wrap;margin-top:24px;}
+  .chip{border:1px solid rgba(255,255,255,0.14);border-radius:10px;padding:9px 14px;font-size:12px;letter-spacing:0.08em;}
+
+  /* ===== TRIO A — Unbounded / Manrope / JetBrains Mono ===== */
+  .A .label,.A .chip{font-family:'JetBrains Mono',monospace;}
+  .A .hero,.A .subhead{font-family:'Unbounded',sans-serif;}
+  .A .body{font-family:'Manrope',sans-serif;}
+
+  /* ===== TRIO B — Onest / Onest / IBM Plex Mono ===== */
+  .B .label,.B .chip{font-family:'IBM Plex Mono',monospace;}
+  .B .hero,.B .subhead{font-family:'Onest',sans-serif;}
+  .B .body{font-family:'Onest',sans-serif;}
+
+  /* ===== TRIO C — Golos Text / Golos Text / JetBrains Mono ===== */
+  .C .label,.C .chip{font-family:'JetBrains Mono',monospace;}
+  .C .hero{font-family:'Golos Text',sans-serif;font-weight:900;}
+  .C .subhead{font-family:'Golos Text',sans-serif;font-weight:700;}
+  .C .body{font-family:'Golos Text',sans-serif;}
+
+  /* ===== TRIO D — Oswald / Manrope / Martian Mono ===== */
+  .D .label,.D .chip{font-family:'Martian Mono',monospace;}
+  .D .hero,.D .subhead{font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:-0.01em;}
+  .D .body{font-family:'Manrope',sans-serif;}
+
+  /* ===== DISPLAY SHOOTOUT (характер дисплея в стиле GROOVE) ===== */
+  .shoot{border:1px solid rgba(255,90,31,0.35);border-radius:20px;padding:34px 40px 40px;margin-bottom:36px;background:linear-gradient(180deg,rgba(255,90,31,0.05),transparent);}
+  .shoot > h2{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:#FF5A1F;margin:0 0 4px;}
+  .shoot > p{font-family:'JetBrains Mono',monospace;font-size:11px;color:#8A8680;margin:0 0 24px;}
+  .disp{padding:20px 0;border-top:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;gap:6px;}
+  .disp .fn{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;color:#8A8680;text-transform:uppercase;}
+  .disp .big{font-size:clamp(34px,6vw,68px);line-height:0.95;letter-spacing:-0.02em;font-weight:800;display:flex;gap:0.5em;flex-wrap:wrap;align-items:baseline;}
+  .disp .big .ua{color:#FF5A1F;}
+  .f-unbounded{font-family:'Unbounded',sans-serif;}
+  .f-exo{font-family:'Exo 2',sans-serif;}
+  .f-rubik{font-family:'Rubik',sans-serif;}
+  .f-saira{font-family:'Saira',sans-serif;}
+  .f-comfortaa{font-family:'Comfortaa',sans-serif;}
+</style>
+</head>
+<body>
+  <div class="head">
+    <h1>Подбор шрифта · кириллица</h1>
+    <p>все кандидаты с настоящей кириллицей · бесплатно на Google Fonts · тёмная сцена сайта</p>
+  </div>
+
+  <div class="wrap">
+
+    <div class="shoot">
+      <h2>Дисплей-шутаут · стиль GROOVE</h2>
+      <p>слово GROOVE (лат.) · ПРОДУКТ (рус.) · оранжевым — украинский тест (єґї)</p>
+      <div class="disp"><span class="fn">Unbounded — в Трио A, округлый техно</span><span class="big f-unbounded">GROOVE <span>ПРОДУКТ</span> <span class="ua">обґрунтування</span></span></div>
+      <div class="disp"><span class="fn">Exo 2 — геометрический техно, широкий</span><span class="big f-exo">GROOVE <span>ПРОДУКТ</span> <span class="ua">обґрунтування</span></span></div>
+      <div class="disp"><span class="fn">Rubik — скруглённые углы, «кубик»</span><span class="big f-rubik">GROOVE <span>ПРОДУКТ</span> <span class="ua">обґрунтування</span></span></div>
+      <div class="disp"><span class="fn">Comfortaa — максимально округлый, «пилюля» (ближе всего к GROOVE)</span><span class="big f-comfortaa">GROOVE <span>ПРОДУКТ</span> <span class="ua">обґрунтування</span></span></div>
+    </div>
+
+    <div class="card A">
+      <div class="meta">
+        <span class="tag">Трио A</span>
+        <span class="name">Unbounded · Manrope · JetBrains Mono</span>
+        <span class="desc">характерный редакционный дисплей, «Awwwards»-энергия</span>
+      </div>
+      <div class="label">01 — Интро</div>
+      <h2 class="hero">ПРОДУКТ</h2>
+      <h3 class="subhead">Один человек — <span class="ac">вся вертикаль</span> от макета до кода.</h3>
+      <p class="body">Дизайню интерфейс, пишу фронт и бэк, довожу до релиза целиком. Без передачи между дизайнером и разработчиком — идея не теряется по дороге.</p>
+      <div class="row"><span class="chip">React · TypeScript</span><span class="chip">Figma · прототипы</span><span class="chip">Node · API</span></div>
+    </div>
+
+    <div class="card B">
+      <div class="meta">
+        <span class="tag">Трио B</span>
+        <span class="name">Onest · Onest · IBM Plex Mono</span>
+        <span class="desc">чистый современный гротеск, спокойный и универсальный</span>
+      </div>
+      <div class="label">01 — Интро</div>
+      <h2 class="hero">ПРОДУКТ</h2>
+      <h3 class="subhead">Один человек — <span class="ac">вся вертикаль</span> от макета до кода.</h3>
+      <p class="body">Дизайню интерфейс, пишу фронт и бэк, довожу до релиза целиком. Без передачи между дизайнером и разработчиком — идея не теряется по дороге.</p>
+      <div class="row"><span class="chip">React · TypeScript</span><span class="chip">Figma · прототипы</span><span class="chip">Node · API</span></div>
+    </div>
+
+    <div class="card C">
+      <div class="meta">
+        <span class="tag">Трио C</span>
+        <span class="name">Golos Text · Golos Text · JetBrains Mono</span>
+        <span class="desc">нативная кириллица (Paratype), плотный грубоватый грота</span>
+      </div>
+      <div class="label">01 — Интро</div>
+      <h2 class="hero">ПРОДУКТ</h2>
+      <h3 class="subhead">Один человек — <span class="ac">вся вертикаль</span> от макета до кода.</h3>
+      <p class="body">Дизайню интерфейс, пишу фронт и бэк, довожу до релиза целиком. Без передачи между дизайнером и разработчиком — идея не теряется по дороге.</p>
+      <div class="row"><span class="chip">React · TypeScript</span><span class="chip">Figma · прототипы</span><span class="chip">Node · API</span></div>
+    </div>
+
+    <div class="card D">
+      <div class="meta">
+        <span class="tag">Трио D</span>
+        <span class="name">Oswald · Manrope · Martian Mono</span>
+        <span class="desc">узкий ударный дисплей, «плакатная» подача</span>
+      </div>
+      <div class="label">01 — Интро</div>
+      <h2 class="hero">ПРОДУКТ</h2>
+      <h3 class="subhead">Один человек — <span class="ac">вся вертикаль</span> от макета до кода.</h3>
+      <p class="body">Дизайню интерфейс, пишу фронт и бэк, довожу до релиза целиком. Без передачи между дизайнером и разработчиком — идея не теряется по дороге.</p>
+      <div class="row"><span class="chip">React · TypeScript</span><span class="chip">Figma · прототипы</span><span class="chip">Node · API</span></div>
+    </div>
+
+  </div>
+</body>
+</html>
