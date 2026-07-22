@@ -159,7 +159,7 @@
           </p>
           <div style="display:flex;flex-wrap:wrap;gap:14px;margin-top:30px;pointer-events:auto;">
             <button onClick="{{ goContact }}" style="display:inline-flex;align-items:center;gap:10px;background:#FF5A1F;color:#0B0A09;font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(15px,1.3vw,17px);border:none;padding:15px 28px;border-radius:999px;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;" style-hover="transform:translateY(-2px);box-shadow:0 14px 36px rgba(255,90,31,0.45);">{{ t.btnD }} <span style="font-size:1.1em;">→</span></button>
-            <a href="#" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#F2F0EB;font-family:'Manrope',sans-serif;font-weight:600;font-size:clamp(15px,1.3vw,17px);border:1px solid rgba(255,255,255,0.28);padding:15px 26px;border-radius:999px;transition:border-color .2s ease,background .2s ease;" style-hover="border-color:#FF5A1F;background:rgba(255,255,255,0.05);">{{ t.btnTg }}</a>
+            <a href="https://t.me/Maxim_Klin" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#F2F0EB;font-family:'Manrope',sans-serif;font-weight:600;font-size:clamp(15px,1.3vw,17px);border:1px solid rgba(255,255,255,0.28);padding:15px 26px;border-radius:999px;transition:border-color .2s ease,background .2s ease;" style-hover="border-color:#FF5A1F;background:rgba(255,255,255,0.05);">{{ t.btnTg }}</a>
           </div>
           <div style="margin-top:26px;">
             <div class="skills-steps">
@@ -395,16 +395,16 @@
       <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(242,240,235,0.5) 0%,rgba(242,240,235,0.24) 45%,rgba(242,240,235,0.55) 100%);"></div>
       <div style="position:absolute;inset:0;z-index:2;color:#0B0A09;padding:88px clamp(28px,4vw,64px) clamp(28px,4vw,52px);display:flex;flex-direction:column;">
         <div style="display:flex;align-items:center;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;color:rgba(11,10,9,0.55);">
-          <span>{{ t.sec6 }}</span><span>[город] · GMT+3</span>
+          <span>{{ t.sec6 }}</span><span>{{ t.c6city }}</span>
         </div>
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:36px;">
           <h2 style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(42px,8vw,120px);line-height:0.92;letter-spacing:-0.03em;margin:0;max-width:14ch;">{{ t.c6h2 }}</h2>
-          <a ref="{{ setCta }}" href="mailto:you@example.com" style="display:inline-flex;align-items:center;gap:14px;background:#FF5A1F;color:#0B0A09;font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(18px,1.8vw,24px);padding:20px 40px;border-radius:999px;white-space:nowrap;transition:transform .2s ease,box-shadow .2s ease;" style-hover="transform:translateY(-3px);box-shadow:0 16px 44px rgba(255,90,31,0.5);">{{ t.c6cta }} <span style="font-size:1.1em;">→</span></a>
+          <a ref="{{ setCta }}" href="https://t.me/Maxim_Klin" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:14px;background:#FF5A1F;color:#0B0A09;font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(18px,1.8vw,24px);padding:20px 40px;border-radius:999px;white-space:nowrap;transition:transform .2s ease,box-shadow .2s ease;" style-hover="transform:translateY(-3px);box-shadow:0 16px 44px rgba(255,90,31,0.5);">{{ t.c6cta }} <span style="font-size:1.1em;">→</span></a>
           <p style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.08em;color:rgba(11,10,9,0.55);margin:0;">{{ t.c6reply }}</p>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;">
-          <a href="mailto:you@example.com">you@example.com</a>
-          <span style="display:flex;gap:22px;"><a href="#">Telegram</a><a href="#">Dribbble</a><a href="#">GitHub</a></span>
+          <a href="https://t.me/Maxim_Klin" target="_blank" rel="noopener">Telegram · @Maxim_Klin</a>
+          <span style="display:flex;gap:22px;"><a href="https://x.com/KlinComX" target="_blank" rel="noopener">X</a><a href="https://instagram.com/klincomm" target="_blank" rel="noopener">Instagram</a><a href="https://www.reddit.com/user/KlinCom/" target="_blank" rel="noopener">Reddit</a></span>
         </div>
       </div>
     </section>
@@ -461,7 +461,7 @@ const T = {
     supA:"Дальше по желанию: поддержка и доработки — $50/мес, либо разовые правки по запросу. ", supM:"Без обязательной подписки", supC:".",
     cloA:"Вы работаете ", cloM:"напрямую с тем, кто пишет код", cloC:". Без менеджеров, без пересказов, без наценки агентства.",
     tape1:"ПЕРВЫМ ТРЁМ ЗАКАЗЧИКАМ — МИНУС 50% ЗА ОТЗЫВ", tape2:"ОСТАЛОСЬ МЕСТ: 3",
-    c6h2:"Обсудим ваш проект?", c6cta:"Обсудить проект", c6reply:"Отвечаю в течение дня"
+    c6h2:"Обсудим ваш проект?", c6cta:"Обсудить проект", c6reply:"Отвечаю в течение дня", c6city:"Прага · GMT+2"
   },
   ua: {
     nav0:"Інтро", nav1:"Підхід", nav2:"Послуги", nav3:"Роботи", nav4:"Процес", nav5:"Контакт",
@@ -509,7 +509,7 @@ const T = {
     supA:"Далі за бажанням: підтримка й доопрацювання — $50/міс, або разові правки за запитом. ", supM:"Без обов'язкової підписки", supC:".",
     cloA:"Ви працюєте ", cloM:"безпосередньо з тим, хто пише код", cloC:". Без менеджерів, без переказів, без націнки агенції.",
     tape1:"ПЕРШИМ ТРЬОМ ЗАМОВНИКАМ — МІНУС 50% ЗА ВІДГУК", tape2:"ЛИШИЛОСЬ МІСЦЬ: 3",
-    c6h2:"Обговоримо ваш проєкт?", c6cta:"Обговорити проєкт", c6reply:"Відповідаю протягом дня"
+    c6h2:"Обговоримо ваш проєкт?", c6cta:"Обговорити проєкт", c6reply:"Відповідаю протягом дня", c6city:"Прага · GMT+2"
   },
   en: {
     nav0:"Intro", nav1:"Approach", nav2:"Services", nav3:"Works", nav4:"Process", nav5:"Contact",
@@ -557,7 +557,7 @@ const T = {
     supA:"Optional afterwards: support and improvements — $50/mo, or one-off fixes on request. ", supM:"No mandatory subscription", supC:".",
     cloA:"You work ", cloM:"directly with the person who writes the code", cloC:". No managers, no retelling, no agency markup.",
     tape1:"FIRST THREE CLIENTS — 50% OFF FOR A REVIEW", tape2:"SPOTS LEFT: 3",
-    c6h2:"Let's discuss your project?", c6cta:"Discuss the project", c6reply:"I reply within a day"
+    c6h2:"Let's discuss your project?", c6cta:"Discuss the project", c6reply:"I reply within a day", c6city:"Prague · GMT+2"
   }
 };
 
