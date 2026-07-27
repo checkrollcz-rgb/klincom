@@ -98,6 +98,33 @@
     .id-card{margin-top:6px;}
     .lk--hero svg{width:min(300px,70vw);}
   }
+  /* ===== Контакты: живой демо-чат с ИИ + генерация ТЗ ===== */
+  .c6-main{flex:1;display:flex;gap:clamp(20px,3vw,44px);align-items:stretch;min-height:0;margin:22px 0 26px;}
+  .c6-left{flex:0 0 38%;display:flex;flex-direction:column;justify-content:center;gap:18px;}
+  .c6-right{flex:1 1 0;min-width:0;display:flex;}
+  .cd{display:flex;flex-direction:column;width:100%;background:rgba(255,255,255,0.72);border:1px solid rgba(11,10,9,0.12);border-radius:22px;overflow:hidden;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 24px 70px rgba(0,0,0,0.16);}
+  .cd-head{display:flex;align-items:center;gap:10px;padding:13px 18px;border-bottom:1px solid rgba(11,10,9,0.08);font-family:'JetBrains Mono',monospace;}
+  .cd-dot{width:9px;height:9px;border-radius:50%;background:#3BCB6B;box-shadow:0 0 0 4px rgba(59,203,107,0.18);flex:0 0 auto;}
+  .cd-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:18px;display:flex;flex-direction:column;gap:11px;}
+  .cd-b{max-width:84%;padding:11px 15px;border-radius:16px;font-family:'Manrope',sans-serif;font-size:14px;line-height:1.45;}
+  .cd-bot{align-self:flex-start;background:#fff;border:1px solid rgba(11,10,9,0.1);border-bottom-left-radius:5px;}
+  .cd-user{align-self:flex-end;background:#FF5A1F;color:#0B0A09;border-bottom-right-radius:5px;font-weight:600;}
+  .cd-foot{padding:13px 16px;border-top:1px solid rgba(11,10,9,0.08);display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .cd-chip{border:1px solid rgba(11,10,9,0.2);background:rgba(255,255,255,0.6);color:#0B0A09;font-family:'Manrope',sans-serif;font-weight:600;font-size:13px;padding:9px 14px;border-radius:999px;cursor:pointer;transition:transform .15s ease,background .15s ease,border-color .15s ease,color .15s ease;}
+  .cd-chip:hover{background:#0B0A09;color:#F2F0EB;border-color:#0B0A09;transform:translateY(-1px);}
+  .cd-dl{background:#FF5A1F;color:#0B0A09;border:none;font-family:'Unbounded',sans-serif;font-weight:600;font-size:15px;padding:13px 22px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:9px;transition:transform .18s ease,box-shadow .18s ease;}
+  .cd-dl:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(255,90,31,0.45);}
+  .cd-dl[disabled]{opacity:0.6;cursor:default;transform:none;box-shadow:none;}
+  .cd-ghost{background:transparent;border:1px solid rgba(11,10,9,0.25);color:#0B0A09;font-family:'JetBrains Mono',monospace;font-size:12px;padding:12px 15px;border-radius:999px;cursor:pointer;transition:background .15s ease,color .15s ease;}
+  .cd-ghost:hover{background:#0B0A09;color:#F2F0EB;}
+  .cd-spec{max-width:92% !important;background:#0B0A09 !important;color:#F2F0EB !important;border:none !important;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.55;}
+  .cd-spec b{color:#FF5A1F;font-weight:700;letter-spacing:0.08em;}
+  .cd-typing{display:flex !important;gap:5px;padding:15px 16px;}
+  .cd-typing i{width:6px;height:6px;border-radius:50%;background:rgba(11,10,9,0.4);animation:cdblink 1s infinite;}
+  .cd-typing i:nth-child(2){animation-delay:.18s;} .cd-typing i:nth-child(3){animation-delay:.36s;}
+  @keyframes cdblink{0%,60%,100%{opacity:.25;}30%{opacity:1;}}
+  .cd-in{animation:cdin .3s ease both;}
+  @keyframes cdin{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
   /* ===== Мобильная адаптация колоды (≤720px) ===== */
   @media(max-width:720px){
     /* контент карточки скроллится вертикально, свайп вбок листает колоду */
@@ -111,6 +138,10 @@
     .tb-scroll > button{padding:8px 8px !important;}
     /* контентным блокам не расти принудительно */
     .hero-row{flex:0 0 auto;}
+    /* контакты: колонки в стопку, чат на всю ширину, высота по контенту */
+    .c6-main{flex-direction:column !important;gap:16px !important;flex:0 0 auto !important;margin:18px 0 22px !important;}
+    .c6-left{flex:0 0 auto !important;justify-content:flex-start !important;}
+    .c6-right{flex:0 0 auto !important;height:420px;}
   }
   @media (prefers-reduced-motion: reduce){.lk .lk-echo{transition:none;}}
 </style>
@@ -411,10 +442,15 @@
         <div style="display:flex;align-items:center;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;color:rgba(11,10,9,0.55);">
           <span>{{ t.sec6 }}</span><span>{{ t.c6city }}</span>
         </div>
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:36px;">
-          <h2 style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(42px,8vw,120px);line-height:0.92;letter-spacing:-0.03em;margin:0;max-width:14ch;">{{ t.c6h2 }}</h2>
-          <a ref="{{ setCta }}" href="{{ tgHref }}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:14px;background:#FF5A1F;color:#0B0A09;font-family:'Unbounded',sans-serif;font-weight:600;font-size:clamp(18px,1.8vw,24px);padding:20px 40px;border-radius:999px;white-space:nowrap;transition:transform .2s ease,box-shadow .2s ease;" style-hover="transform:translateY(-3px);box-shadow:0 16px 44px rgba(255,90,31,0.5);">{{ t.c6cta }} <span style="font-size:1.1em;">→</span></a>
-          <p style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.08em;color:rgba(11,10,9,0.55);margin:0;">{{ t.c6reply }}</p>
+        <div class="c6-main">
+          <div class="c6-left">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.14em;color:#FF5A1F;font-weight:700;">{{ t.demoBadge }}</span>
+            <h2 style="font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(28px,3.4vw,48px);line-height:0.98;letter-spacing:-0.02em;margin:0;max-width:12ch;">{{ t.c6h2 }}</h2>
+            <p style="font-family:'Manrope',sans-serif;font-size:15px;line-height:1.5;color:rgba(11,10,9,0.68);margin:0;max-width:36ch;">{{ t.demoLead }}</p>
+            <a ref="{{ setCta }}" href="{{ tgHref }}" target="_blank" rel="noopener" style="align-self:flex-start;display:inline-flex;align-items:center;gap:12px;background:#FF5A1F;color:#0B0A09;font-family:'Unbounded',sans-serif;font-weight:600;font-size:16px;padding:15px 28px;border-radius:999px;white-space:nowrap;transition:transform .2s ease,box-shadow .2s ease;" style-hover="transform:translateY(-3px);box-shadow:0 16px 44px rgba(255,90,31,0.5);">{{ t.c6cta }} <span style="font-size:1.1em;">→</span></a>
+            <p style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.08em;color:rgba(11,10,9,0.55);margin:0;">{{ t.c6reply }}</p>
+          </div>
+          <div class="c6-right"><div data-chatdemo style="width:100%;display:flex;"></div></div>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px 16px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;">
           <a href="{{ tgHref }}" target="_blank" rel="noopener">Telegram · @Maxim_Klin</a>
@@ -476,7 +512,29 @@ const T = {
     cloA:"Вы работаете ", cloM:"напрямую с тем, кто пишет код", cloC:". Без менеджеров, без пересказов, без наценки агентства.",
     tape1:"ПЕРВЫМ ТРЁМ ЗАКАЗЧИКАМ — МИНУС 50% ЗА ОТЗЫВ", tape2:"ОСТАЛОСЬ МЕСТ: 3",
     c6h2:"Обсудим ваш проект?", c6cta:"Обсудить проект", c6reply:"Отвечаю в течение дня", c6city:"Прага · GMT+2",
-    tgMsg:"Привет! Я с сайта KlinCom, хочу обсудить задачу: "
+    tgMsg:"Привет! Я с сайта KlinCom, хочу обсудить задачу: ",
+    demoBadge:"ЧАТ-АССИСТЕНТ АЛЕКС", demoLead:"Познакомьтесь — это Алекс, мой чат-ассистент. Он задаст пару вопросов, чтобы лучше понять вашу задачу. Попробуйте пообщаться — а дальше обсудим лично.",
+    demo:{
+      assistant:"Алекс", role:"специалист KlinCom", online:"на связи",
+      steps:[
+        {q:"Привет 👋 Я Алекс, ассистент Максима. Задам пару вопросов, чтобы лучше понять, что вам нужно — а дальше Максим подключится лично. Расскажите, чем занимаетесь?", opts:[{t:"Интернет-магазин",v:"интернет-магазин"},{t:"Онлайн-школа",v:"онлайн-школа"},{t:"Услуги / агентство",v:"агентство услуг"}]},
+        {q:"Отлично. А что сейчас забирает больше всего времени?", opts:[{t:"Отвечаю клиентам вручную",v:"manual"},{t:"Теряю заявки",v:"leads"},{t:"Рутина в таблицах",v:"routine"}]},
+        {q:"Понял. Если бы это делалось само — что важнее всего?", opts:[{t:"Отвечать 24/7",v:"отвечать клиентам круглосуточно"},{t:"Не терять ни одной заявки",v:"не терять ни одной заявки"},{t:"Экономить моё время",v:"экономить ваше время"}]},
+        {q:"Ясно. И последнее — как срочно хочется запустить?", opts:[{t:"Ещё вчера",v:"как можно скорее"},{t:"В этом месяце",v:"в этом месяце"},{t:"Присматриваюсь",v:"на этапе выбора"}]}
+      ],
+      done:"Готово! Мы с вами собрали вот такое ТЗ 👇",
+      own:"Это ваша идея — просто аккуратно оформлена. Скачайте ТЗ и напишите Максиму лично — обсудим детали тет-а-тет 🤝",
+      dl:"Скачать ТЗ (PDF)", again:"Собрать заново", gen:"Готовлю PDF…",
+      pdf:{
+        kicker:"ТЕХНИЧЕСКОЕ ЗАДАНИЕ", title:"ИИ-решение под вашу задачу",
+        business:"Бизнес", task:"Задача", build:"Что построим", funcs:"Ключевые функции", result:"Результат для вас", urgency:"Сроки", priority:"Приоритет",
+        taskMap:{manual:"Ответы клиентам отнимают часы каждый день и приходят с задержкой.",leads:"Часть заявок теряется, ответить вовремя получается не всегда.",routine:"Много ручной работы в таблицах — время уходит на рутину, а не на бизнес."},
+        buildMap:{manual:"ИИ-ассистента, который отвечает вашим клиентам вместо вас — вежливо, по делу и без выходных.",leads:"Систему, которая ловит каждую заявку и сразу ведёт её в работу — ничего не теряется.",routine:"Автоматизацию рутины: данные собираются и обновляются сами, без ручных таблиц."},
+        funcsMap:{manual:["Мгновенные ответы 24/7 на языке клиента","Сложные вопросы передаёт лично вам","Помнит контекст каждого диалога"],leads:["Заявка фиксируется сразу и не теряется","Уведомление вам в один клик","Вся история — в одном месте"],routine:["Данные собираются автоматически","Обновление без ручного ввода","Понятные отчёты всегда под рукой"]},
+        result:"Меньше рутины, быстрее отклик, довольные клиенты — а вы занимаетесь ростом, а не текучкой.",
+        footer:"KlinCom · Максим Клин · Прага", made:"Собрано в диалоге с Алексом · ассистентом KlinCom"
+      }
+    }
   },
   ua: {
     nav0:"Інтро", nav1:"Підхід", nav2:"Послуги", nav3:"Роботи", nav4:"Процес", nav5:"Контакт",
@@ -525,7 +583,29 @@ const T = {
     cloA:"Ви працюєте ", cloM:"безпосередньо з тим, хто пише код", cloC:". Без менеджерів, без переказів, без націнки агенції.",
     tape1:"ПЕРШИМ ТРЬОМ ЗАМОВНИКАМ — МІНУС 50% ЗА ВІДГУК", tape2:"ЛИШИЛОСЬ МІСЦЬ: 3",
     c6h2:"Обговоримо ваш проєкт?", c6cta:"Обговорити проєкт", c6reply:"Відповідаю протягом дня", c6city:"Прага · GMT+2",
-    tgMsg:"Привіт! Я з сайту KlinCom, хочу обговорити задачу: "
+    tgMsg:"Привіт! Я з сайту KlinCom, хочу обговорити задачу: ",
+    demoBadge:"ЧАТ-АСИСТЕНТ АЛЕКС", demoLead:"Знайомтесь — це Алекс, мій чат-асистент. Він поставить кілька питань, щоб краще зрозуміти вашу задачу. Спробуйте поспілкуватись — а далі обговоримо особисто.",
+    demo:{
+      assistant:"Алекс", role:"спеціаліст KlinCom", online:"на звʼязку",
+      steps:[
+        {q:"Привіт 👋 Я Алекс, асистент Максима. Поставлю кілька питань, щоб краще зрозуміти, що вам потрібно — а далі Максим підключиться особисто. Розкажіть, чим займаєтесь?", opts:[{t:"Інтернет-магазин",v:"інтернет-магазин"},{t:"Онлайн-школа",v:"онлайн-школа"},{t:"Послуги / агенція",v:"агенція послуг"}]},
+        {q:"Чудово. А що зараз забирає найбільше часу?", opts:[{t:"Відповідаю клієнтам вручну",v:"manual"},{t:"Втрачаю заявки",v:"leads"},{t:"Рутина в таблицях",v:"routine"}]},
+        {q:"Зрозумів. Якби це робилося саме — що найважливіше?", opts:[{t:"Відповідати 24/7",v:"відповідати клієнтам цілодобово"},{t:"Не втрачати жодної заявки",v:"не втрачати жодної заявки"},{t:"Економити мій час",v:"економити ваш час"}]},
+        {q:"Ясно. І останнє — як терміново хочеться запустити?", opts:[{t:"Ще вчора",v:"якнайшвидше"},{t:"Цього місяця",v:"цього місяця"},{t:"Придивляюсь",v:"на етапі вибору"}]}
+      ],
+      done:"Готово! Ми з вами зібрали ось таке ТЗ 👇",
+      own:"Це ваша ідея — просто акуратно оформлена. Завантажте ТЗ і напишіть Максиму особисто — обговоримо деталі віч-на-віч 🤝",
+      dl:"Завантажити ТЗ (PDF)", again:"Зібрати заново", gen:"Готую PDF…",
+      pdf:{
+        kicker:"ТЕХНІЧНЕ ЗАВДАННЯ", title:"ШІ-рішення під вашу задачу",
+        business:"Бізнес", task:"Задача", build:"Що побудуємо", funcs:"Ключові функції", result:"Результат для вас", urgency:"Терміни", priority:"Пріоритет",
+        taskMap:{manual:"Відповіді клієнтам забирають години щодня і надходять із затримкою.",leads:"Частина заявок губиться, відповісти вчасно виходить не завжди.",routine:"Багато ручної роботи в таблицях — час іде на рутину, а не на бізнес."},
+        buildMap:{manual:"ШІ-асистента, який відповідає вашим клієнтам замість вас — ввічливо, по суті й без вихідних.",leads:"Систему, що ловить кожну заявку і одразу веде її в роботу — нічого не губиться.",routine:"Автоматизацію рутини: дані збираються й оновлюються самі, без ручних таблиць."},
+        funcsMap:{manual:["Миттєві відповіді 24/7 мовою клієнта","Складні питання передає особисто вам","Памʼятає контекст кожного діалогу"],leads:["Заявка фіксується одразу і не губиться","Сповіщення вам в один клік","Уся історія — в одному місці"],routine:["Дані збираються автоматично","Оновлення без ручного вводу","Зрозумілі звіти завжди під рукою"]},
+        result:"Менше рутини, швидший відгук, задоволені клієнти — а ви займаєтесь зростанням, а не плинністю.",
+        footer:"KlinCom · Максим Клін · Прага", made:"Зібрано в діалозі з Алексом · асистентом KlinCom"
+      }
+    }
   },
   en: {
     nav0:"Intro", nav1:"Approach", nav2:"Services", nav3:"Works", nav4:"Process", nav5:"Contact",
@@ -574,7 +654,29 @@ const T = {
     cloA:"You work ", cloM:"directly with the person who writes the code", cloC:". No managers, no retelling, no agency markup.",
     tape1:"FIRST THREE CLIENTS — 50% OFF FOR A REVIEW", tape2:"SPOTS LEFT: 3",
     c6h2:"Let's discuss your project?", c6cta:"Discuss the project", c6reply:"I reply within a day", c6city:"Prague · GMT+2",
-    tgMsg:"Hi! I found you via the KlinCom website and I'd like to discuss a task: "
+    tgMsg:"Hi! I found you via the KlinCom website and I'd like to discuss a task: ",
+    demoBadge:"CHAT ASSISTANT · ALEX", demoLead:"Meet Alex — my chat assistant. He'll ask a couple of questions to understand your task better. Give it a try — then we take it one-on-one.",
+    demo:{
+      assistant:"Alex", role:"KlinCom specialist", online:"online",
+      steps:[
+        {q:"Hi 👋 I'm Alex, Maxim's assistant. I'll ask a couple of questions to understand what you need — then Maxim steps in personally. Tell me, what do you do?", opts:[{t:"Online store",v:"an online store"},{t:"Online school",v:"an online school"},{t:"Services / agency",v:"a services agency"}]},
+        {q:"Great. And what eats up most of your time right now?", opts:[{t:"Answering clients by hand",v:"manual"},{t:"Losing leads",v:"leads"},{t:"Spreadsheet busywork",v:"routine"}]},
+        {q:"Got it. If this ran on its own — what matters most?", opts:[{t:"Reply 24/7",v:"replying to clients around the clock"},{t:"Never miss a lead",v:"never missing a single lead"},{t:"Save my time",v:"saving your time"}]},
+        {q:"Clear. Last one — how soon do you want to launch?", opts:[{t:"Yesterday",v:"as soon as possible"},{t:"This month",v:"this month"},{t:"Just exploring",v:"still exploring"}]}
+      ],
+      done:"Done! Together we've put together this brief 👇",
+      own:"It's your idea — just neatly framed. Download the brief and message Maxim directly — let's take the details one-on-one 🤝",
+      dl:"Download brief (PDF)", again:"Start over", gen:"Preparing PDF…",
+      pdf:{
+        kicker:"PROJECT BRIEF", title:"An AI solution for your task",
+        business:"Business", task:"The problem", build:"What we'll build", funcs:"Key features", result:"What you get", urgency:"Timeline", priority:"Priority",
+        taskMap:{manual:"Answering clients takes hours every day and always arrives late.",leads:"Some leads slip through, and you can't always reply in time.",routine:"Lots of manual spreadsheet work — time goes to busywork, not the business."},
+        buildMap:{manual:"An AI assistant that answers your clients for you — politely, to the point, and never off.",leads:"A system that catches every lead and moves it into action instantly — nothing gets lost.",routine:"Automation for the busywork: data collects and updates itself, no manual spreadsheets."},
+        funcsMap:{manual:["Instant 24/7 replies in the client's language","Hands complex questions to you personally","Remembers the context of every chat"],leads:["Every lead is captured instantly, never lost","One-tap notification to you","All history in one place"],routine:["Data is collected automatically","Updates with no manual entry","Clear reports always at hand"]},
+        result:"Less busywork, faster replies, happier clients — while you focus on growth, not the grind.",
+        footer:"KlinCom · Maxim Klin · Prague", made:"Assembled in a chat with Alex · KlinCom assistant"
+      }
+    }
   }
 };
 
@@ -778,6 +880,7 @@ class Component extends DCLogic {
     this.draw();
     this.initLogo();
     this.initGalleries();
+    this.initChatDemo();
     document.documentElement.lang = this.state.lang==='ua' ? 'uk' : this.state.lang;
   }
 
@@ -817,6 +920,124 @@ class Component extends DCLogic {
         slot.addEventListener('mouseleave', reset);
         reset();
       });
+    };
+    boot();
+  }
+
+  // Демо-чат с ИИ на карточке контактов: скриптованный диалог → сборка ТЗ → PDF.
+  // Живёт своим DOM через appendChild (переживает ~1с ре-рендер, как галереи).
+  initChatDemo(){
+    const esc = (s)=>String(s).replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    const langOf = ()=>{ const l=document.documentElement.lang; return l==='uk'?'ua':(l==='ru'?'ru':'en'); };
+
+    // Лениво подгружаем html2pdf только при первом скачивании.
+    const ensureLib = ()=> new Promise((res,rej)=>{
+      if(window.html2pdf) return res();
+      const s=document.createElement('script');
+      s.src='https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js';
+      s.onload=()=>res(); s.onerror=()=>rej(new Error('cdn'));
+      document.head.appendChild(s);
+    });
+
+    const sect = (h,inner)=> '<div style="margin-top:22px;"><div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;letter-spacing:0.14em;color:#FF5A1F;font-weight:700;margin-bottom:8px;">'+esc(String(h).toUpperCase())+'</div>'+inner+'</div>';
+
+    const buildPdfNode = (D, ans)=>{
+      const P=D.pdf, pain=ans[1]||'manual';
+      const n=document.createElement('div');
+      n.style.cssText='position:fixed;left:-10000px;top:0;width:794px;background:#F7F5F0;color:#0B0A09;font-family:Manrope,Arial,sans-serif;padding:56px 60px;box-sizing:border-box;';
+      n.innerHTML =
+        '<div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #0B0A09;padding-bottom:16px;">'
+        +'<span style="font-family:Unbounded,Arial,sans-serif;font-weight:700;font-size:26px;letter-spacing:-0.02em;">KlinCom</span>'
+        +'<span style="font-family:\'JetBrains Mono\',monospace;font-size:11px;letter-spacing:0.18em;color:#FF5A1F;font-weight:700;">'+esc(P.kicker)+'</span></div>'
+        +'<h1 style="font-family:Unbounded,Arial,sans-serif;font-weight:700;font-size:33px;line-height:1.1;letter-spacing:-0.02em;margin:26px 0 6px;">'+esc(P.title)+'</h1>'
+        +'<div style="font-family:\'JetBrains Mono\',monospace;font-size:12px;color:rgba(11,10,9,0.55);margin-bottom:4px;">'+esc(P.business)+': '+esc(ans[0]||'')+'</div>'
+        + sect(P.task, '<p style="margin:0;font-size:15px;line-height:1.6;">'+esc(P.taskMap[pain]||'')+'</p>')
+        + sect(P.build, '<p style="margin:0;font-size:15px;line-height:1.6;">'+esc(P.buildMap[pain]||'')+'</p>')
+        + sect(P.funcs, '<ul style="margin:0;padding:0;list-style:none;">'+(P.funcsMap[pain]||[]).map(f=>'<li style="font-size:15px;line-height:1.75;padding-left:22px;position:relative;"><span style="position:absolute;left:0;color:#FF5A1F;font-weight:700;">&rarr;</span>'+esc(f)+'</li>').join('')+'</ul>')
+        + '<div style="display:flex;gap:56px;margin-top:24px;">'
+          + '<div><div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;letter-spacing:0.14em;color:#FF5A1F;font-weight:700;margin-bottom:6px;">'+esc(P.priority)+'</div><div style="font-size:15px;">'+esc(ans[2]||'')+'</div></div>'
+          + '<div><div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;letter-spacing:0.14em;color:#FF5A1F;font-weight:700;margin-bottom:6px;">'+esc(P.urgency)+'</div><div style="font-size:15px;">'+esc(ans[3]||'')+'</div></div>'
+        + '</div>'
+        + sect(P.result, '<p style="margin:0;font-size:15px;line-height:1.6;">'+esc(P.result)+'</p>')
+        + '<div style="margin-top:40px;border-top:1px solid rgba(11,10,9,0.15);padding-top:14px;display:flex;justify-content:space-between;font-family:\'JetBrains Mono\',monospace;font-size:10px;color:rgba(11,10,9,0.5);letter-spacing:0.08em;"><span>'+esc(P.footer)+'</span><span>'+esc(P.made)+'</span></div>';
+      return n;
+    };
+
+    const printFallback = (D, ans)=>{
+      const node=buildPdfNode(D, ans); node.style.left='0';
+      const w=window.open('','_blank'); if(!w){ return; }
+      w.document.write('<!doctype html><meta charset="utf-8"><title>KlinCom</title><body style="margin:0;background:#F7F5F0;">'+node.outerHTML+'</body>');
+      w.document.close(); setTimeout(()=>{ try{ w.print(); }catch(e){} }, 400);
+    };
+
+    const downloadPdf = (D, ans, btn)=>{
+      const orig=btn.innerHTML; btn.disabled=true; btn.textContent=D.gen||'…';
+      ensureLib().then(()=>{
+        const node=buildPdfNode(D, ans); document.body.appendChild(node);
+        const h=node.offsetHeight||1123;
+        return window.html2pdf().set({
+          margin:0, filename:'KlinCom-'+((D.pdf.kicker||'brief').split(' ')[0])+'.pdf',
+          image:{type:'jpeg',quality:0.98},
+          html2canvas:{scale:2, backgroundColor:'#F7F5F0', useCORS:true},
+          jsPDF:{unit:'px', format:[794, h], orientation:'portrait'}
+        }).from(node).save().then(()=>node.remove());
+      }).catch(()=>printFallback(D, ans))
+        .finally(()=>{ btn.disabled=false; btn.innerHTML=orig; });
+    };
+
+    const boot = ()=>{
+      const mount = document.querySelector('[data-chatdemo]');
+      if(!mount){ setTimeout(boot, 140); return; }
+      if(mount._init) return; mount._init = true;
+
+      const build = ()=>{
+        const lang = langOf();
+        const D = (T[lang] && T[lang].demo) ? T[lang].demo : T.ru.demo;
+        mount.innerHTML='';
+        const cd=document.createElement('div'); cd.className='cd';
+        const head=document.createElement('div'); head.className='cd-head';
+        head.innerHTML='<span class="cd-dot"></span><span style="font-size:13px;font-weight:700;letter-spacing:-0.01em;">'+esc(D.assistant)+'</span><span style="font-size:11px;color:rgba(11,10,9,0.5);">· '+esc(D.role||'')+'</span><span style="margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:10px;color:rgba(11,10,9,0.45);letter-spacing:0.08em;"><span style="width:5px;height:5px;border-radius:50%;background:#3BCB6B;"></span>'+esc(D.online)+'</span>';
+        const body=document.createElement('div'); body.className='cd-body';
+        const foot=document.createElement('div'); foot.className='cd-foot';
+        cd.appendChild(head); cd.appendChild(body); cd.appendChild(foot); mount.appendChild(cd);
+
+        const answers=[];
+        const scroll=()=>{ body.scrollTop=body.scrollHeight; };
+        const bubble=(text,who)=>{ const b=document.createElement('div'); b.className='cd-b cd-in '+(who==='user'?'cd-user':'cd-bot'); b.textContent=text; body.appendChild(b); scroll(); return b; };
+        const typing=()=>{ const t=document.createElement('div'); t.className='cd-b cd-bot cd-typing'; t.innerHTML='<i></i><i></i><i></i>'; body.appendChild(t); scroll(); return t; };
+        const askStep=(i)=>{
+          foot.innerHTML='';
+          D.steps[i].opts.forEach(o=>{ const c=document.createElement('button'); c.className='cd-chip'; c.textContent=o.t; c.addEventListener('click',()=>choose(i,o)); foot.appendChild(c); });
+        };
+        const choose=(i,o)=>{
+          bubble(o.t,'user'); answers[i]=o.v; foot.innerHTML='';
+          const t=typing();
+          setTimeout(()=>{ t.remove();
+            if(i+1 < D.steps.length){ bubble(D.steps[i+1].q,'bot'); askStep(i+1); }
+            else finish();
+          }, 640);
+        };
+        const finish=()=>{
+          bubble(D.done,'bot');
+          const pain=answers[1]||'manual', P=D.pdf;
+          const spec=document.createElement('div'); spec.className='cd-b cd-spec cd-in';
+          spec.innerHTML='<b>'+esc(P.build.toUpperCase())+'</b><br>'+esc(P.buildMap[pain]||'')+'<br><br><b>'+esc(P.funcs.toUpperCase())+'</b><br>'+(P.funcsMap[pain]||[]).map(f=>'· '+esc(f)).join('<br>');
+          body.appendChild(spec); scroll();
+          const own=bubble(D.own,'bot'); void own;
+          foot.innerHTML='';
+          const dl=document.createElement('button'); dl.className='cd-dl'; dl.innerHTML='<span style="font-size:1.05em;">&#8595;</span> '+esc(D.dl);
+          dl.addEventListener('click',()=>downloadPdf(D, answers, dl));
+          const again=document.createElement('button'); again.className='cd-ghost'; again.textContent=D.again;
+          again.addEventListener('click',()=>build());
+          foot.appendChild(dl); foot.appendChild(again);
+        };
+
+        bubble(D.steps[0].q,'bot'); askStep(0);
+      };
+
+      let last=langOf(); build();
+      // при смене языка пересобираем демо на новом языке
+      setInterval(()=>{ const cur=langOf(); if(cur!==last){ last=cur; build(); } }, 800);
     };
     boot();
   }
